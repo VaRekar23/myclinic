@@ -21,10 +21,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 
 # Copy the JAR file from the build stage to the runtime stage
-COPY --from=build /app/target/myclinic.jar /app/myclinic.jar
+COPY --from=build /app/target/myclinic-0.0.1-SNAPSHOT.jar /app/myclinic.jar
 
 # Expose the port your app runs on
 EXPOSE 8080
 
 # Command to run the app
-ENTRYPOINT ["java", "-jar", "/app/yourappname.jar"]
+ENTRYPOINT ["java", "-jar", "/app/myclinic.jar"]
