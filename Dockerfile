@@ -1,5 +1,5 @@
 # Use an official Maven image to build the app
-FROM maven:3.9.0-openjdk-17 AS build
+FROM maven:3.8.5-openjdk-17 AS build
 
 # Install JDK 21
 RUN apt-get update && \
