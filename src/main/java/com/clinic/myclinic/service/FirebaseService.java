@@ -17,14 +17,14 @@ public class FirebaseService {
 	@Autowired
 	FirebaseDAO firebaseDAO;
 
-	public Map<String, Object> getTextDetails(String contentIn) throws ExecutionException, InterruptedException {
-		Map<String, Object> textDetails = firebaseDAO.getTextDetails(contentIn);
+	public Map<String, Object> getUiDetails(String contentIn) throws ExecutionException, InterruptedException {
+		Map<String, Object> textDetails = firebaseDAO.getUiDetails(contentIn);
 		
 		return textDetails;
 	}
 	
-	public Map<String, Map<String, Object>> getUiDetails() throws ExecutionException, InterruptedException {
-		Map<String, Map<String, Object>> uiDetails = firebaseDAO.getUiDetails();
+	public Map<String, Map<String, Object>> getHeaderDetails() throws ExecutionException, InterruptedException {
+		Map<String, Map<String, Object>> uiDetails = firebaseDAO.getHeaderDetails();
 		
 		return uiDetails;
 	}

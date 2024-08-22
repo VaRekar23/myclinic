@@ -28,8 +28,8 @@ public class FirebaseDAO {
 		this.firestore = firestore;
 	}
 	
-	public Map<String, Object> getTextDetails(String contentIn) throws ExecutionException, InterruptedException {
-		DocumentReference docRef = firestore.collection("text-content").document(contentIn);
+	public Map<String, Object> getUiDetails(String contentIn) throws ExecutionException, InterruptedException {
+		DocumentReference docRef = firestore.collection("ui-details").document(contentIn);
 		ApiFuture<DocumentSnapshot> future = docRef.get();
 		DocumentSnapshot document = future.get();
 		
@@ -40,8 +40,8 @@ public class FirebaseDAO {
 		}
 	}
 	
-	public Map<String, Map<String, Object>> getUiDetails() throws ExecutionException, InterruptedException {
-		Iterable<DocumentReference> documentReference = firestore.collection("ui-component").listDocuments();
+	public Map<String, Map<String, Object>> getHeaderDetails() throws ExecutionException, InterruptedException {
+		Iterable<DocumentReference> documentReference = firestore.collection("header-details").listDocuments();
 		Iterator<DocumentReference> iterator = documentReference.iterator();
 		
 		Map<String, Map<String, Object>> resultList = new HashMap();

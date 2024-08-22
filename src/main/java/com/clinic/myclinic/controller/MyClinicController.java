@@ -25,20 +25,20 @@ public class MyClinicController {
 	@Autowired
 	FirebaseService firebaseService;
 	
-	@RequestMapping(value="api/controller/text-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, Object>> getTextDetails(@RequestParam String contentIn) {
+	@RequestMapping(value="api/controller/ui-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> getUiDetails(@RequestParam String contentIn) {
 		try {
-			Map<String, Object> textDetails = firebaseService.getTextDetails(contentIn);
+			Map<String, Object> textDetails = firebaseService.getUiDetails(contentIn);
 			return new ResponseEntity<>(textDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@RequestMapping(value="api/controller/ui-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, Map<String, Object>>> getUiDetails() {
+	@RequestMapping(value="api/controller/header-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Map<String, Object>>> getHeaderDetails() {
 		try {
-			Map<String, Map<String, Object>> uiDetails = firebaseService.getUiDetails();
+			Map<String, Map<String, Object>> uiDetails = firebaseService.getHeaderDetails();
 			return new ResponseEntity<>(uiDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
