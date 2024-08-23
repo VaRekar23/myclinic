@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.clinic.myclinic.bean.RecentlyUsedTreatment;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -40,20 +41,46 @@ public class FirebaseDAO {
 		}
 	}
 	
-	public Map<String, Map<String, Object>> getHeaderDetails() throws ExecutionException, InterruptedException {
-		Iterable<DocumentReference> documentReference = firestore.collection("header-details").listDocuments();
-		Iterator<DocumentReference> iterator = documentReference.iterator();
-		
-		Map<String, Map<String, Object>> resultList = new HashMap();
-		while(iterator.hasNext()) {
-			DocumentReference documentReference1 = iterator.next();
-			ApiFuture<DocumentSnapshot> future = documentReference1.get();
-			DocumentSnapshot document = future.get();
-			Map<String, Object> result = document.getData();
-			resultList.put(documentReference1.getId(), result);
+	public Map<String, Object> getHeaderDetails(String role) throws ExecutionException, InterruptedException {
+		String documentKey = "";
+		if (role.equals("admin")) {
+			documentKey = "admin_menu";
+		} else {
+			documentKey = "menu";
 		}
+		DocumentReference docRef = firestore.collection("header-details").document(documentKey);
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		DocumentSnapshot document = future.get();
 		
-		return resultList;
+		if (document.exists()) {
+			return document.getData();
+		} else {
+			throw new RuntimeException("Document not found");
+		}
+	}
+	
+	public List<RecentlyUsedTreatment> getRecentlyUsedTreatment() throws ExecutionException, InterruptedException {
+		DocumentReference docRef = firestore.collection("test-data").document("recently_used_treatment");
+		ApiFuture<DocumentSnapshot> future = docRef.get();
+		DocumentSnapshot document = future.get();
+		
+		if (document.exists()) {
+			Map<String, Object> result = document.getData();
+			List<RecentlyUsedTreatment> recentlyUsedTreatmentsList = new ArrayList<RecentlyUsedTreatment>();
+			for (Map.Entry<String, Object> entry: result.entrySet()) {
+				Map<String, Object> treatmentData = (Map<String, Object>) entry.getValue();
+				RecentlyUsedTreatment treatment = new RecentlyUsedTreatment(
+								(String) treatmentData.get("treatment_name"),
+								(String) treatmentData.get("img_path"),
+								(Long) treatmentData.get("count"));
+				
+				recentlyUsedTreatmentsList.add(treatment);
+			}
+			
+			return recentlyUsedTreatmentsList;
+		} else {
+			throw new RuntimeException("Document not found");
+		}
 	}
 
 }

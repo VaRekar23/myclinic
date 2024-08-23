@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.myclinic.service.FirebaseService;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 @CrossOrigin
 @RestController
@@ -36,11 +34,21 @@ public class MyClinicController {
 	}
 	
 	@RequestMapping(value="api/controller/header-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, Map<String, Object>>> getHeaderDetails() {
+	public ResponseEntity<Map<String, Object>> getHeaderDetails(@RequestParam String role) {
 		try {
-			Map<String, Map<String, Object>> uiDetails = firebaseService.getHeaderDetails();
+			Map<String, Object> uiDetails = firebaseService.getHeaderDetails(role);
 			return new ResponseEntity<>(uiDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/home-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, List>> getHomeDetails() {
+		try {
+			Map<String, List> homeDetails = firebaseService.getHomeDetails();
+			return new ResponseEntity<Map<String, List>>(homeDetails, HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
