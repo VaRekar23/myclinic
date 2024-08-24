@@ -1,13 +1,13 @@
 package com.clinic.myclinic.bean;
 
 public class OverallFeedback {
-	private Long rating;
+	private double rating;
 	private int totalCount;
 	
-	public Long getRating() {
+	public double getRating() {
 		return rating;
 	}
-	public void setRating(Long rating) {
+	public void setRating(double rating) {
 		this.rating = rating;
 	}
 	public int getTotalCount() {

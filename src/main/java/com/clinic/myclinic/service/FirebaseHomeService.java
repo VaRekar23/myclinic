@@ -25,8 +25,6 @@ public class FirebaseHomeService {
 	@Autowired
 	FirebaseHomeDAO firebaseHomeDAO;
 	
-	private Long totalRatings=0l;
-	
 	public Map<String, Object> getHomeDetails() throws ExecutionException, InterruptedException {
 		Map<String, Object> homeDetails = new HashMap<String, Object>();
 		List<RecentlyUsedTreatment> recentTreatmentList = frequentTreatmentBuilder(firebaseHomeDAO.getRecentlyUsedTreatment());
@@ -38,10 +36,11 @@ public class FirebaseHomeService {
 		
 		List<CustomerFeedback> feedbackList = feedbackBuilder(firebaseHomeDAO.getFeedback());
 		int totalFeedback = feedbackList.size();
+		double averageRating = feedbackList.stream().mapToLong(CustomerFeedback::getRatings).average().orElse(0);
 		homeDetails.put("feedbacks", feedbackList.stream().limit(5).toList());
 		
 		OverallFeedback overallFeedback = new OverallFeedback();
-		overallFeedback.setRating(totalRatings/totalFeedback);
+		overallFeedback.setRating(averageRating);
 		overallFeedback.setTotalCount(totalFeedback);
 		homeDetails.put("overall_feedback", overallFeedback);
 		
@@ -110,7 +109,6 @@ public class FirebaseHomeService {
 			feedback.setCustomerName((String) feedbackData.get("customerName"));
 			feedback.setCreateDate(Helper.dateFormater(feedbackData.get("date")));
 			feedback.setRatings((Long) feedbackData.get("ratings"));
-			totalRatings += (Long) feedbackData.get("ratings");
 			
 			String treatmentId = (String) feedbackData.get("treatment-id");
 			TreatmentFeedback treatmentFeedback = firebaseHomeDAO.getFeedbackTreatment(treatmentId);
