@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinic.myclinic.bean.CustomerFeedback;
+import com.clinic.myclinic.bean.OverallFeedback;
 import com.clinic.myclinic.bean.RecentlyUsedTreatment;
 import com.clinic.myclinic.bean.TreatmentCategory;
 import com.clinic.myclinic.bean.TreatmentFeedback;
@@ -24,9 +25,10 @@ public class FirebaseHomeService {
 	@Autowired
 	FirebaseHomeDAO firebaseHomeDAO;
 	
-	@SuppressWarnings("rawtypes")
-	public Map<String, List> getHomeDetails() throws ExecutionException, InterruptedException {
-		Map<String, List> homeDetails = new HashMap<String, List>();
+	private Long totalRatings=0l;
+	
+	public Map<String, Object> getHomeDetails() throws ExecutionException, InterruptedException {
+		Map<String, Object> homeDetails = new HashMap<String, Object>();
 		List<RecentlyUsedTreatment> recentTreatmentList = frequentTreatmentBuilder(firebaseHomeDAO.getRecentlyUsedTreatment());
 		recentTreatmentList.sort(Comparator.comparingLong(RecentlyUsedTreatment::getCount).reversed());
 		homeDetails.put("recent_treatment", recentTreatmentList.stream().limit(3).toList());
@@ -35,7 +37,13 @@ public class FirebaseHomeService {
 		homeDetails.put("treatments", treatmentList);
 		
 		List<CustomerFeedback> feedbackList = feedbackBuilder(firebaseHomeDAO.getFeedback());
+		int totalFeedback = feedbackList.size();
 		homeDetails.put("feedbacks", feedbackList.stream().limit(5).toList());
+		
+		OverallFeedback overallFeedback = new OverallFeedback();
+		overallFeedback.setRating(totalRatings/totalFeedback);
+		overallFeedback.setTotalCount(totalFeedback);
+		homeDetails.put("overall_feedback", overallFeedback);
 		
 		return homeDetails;
 	}
@@ -102,6 +110,7 @@ public class FirebaseHomeService {
 			feedback.setCustomerName((String) feedbackData.get("customerName"));
 			feedback.setCreateDate(Helper.dateFormater(feedbackData.get("date")));
 			feedback.setRatings((Long) feedbackData.get("ratings"));
+			totalRatings += (Long) feedbackData.get("ratings");
 			
 			String treatmentId = (String) feedbackData.get("treatment-id");
 			TreatmentFeedback treatmentFeedback = firebaseHomeDAO.getFeedbackTreatment(treatmentId);

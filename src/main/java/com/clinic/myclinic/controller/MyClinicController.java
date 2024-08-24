@@ -48,10 +48,10 @@ public class MyClinicController {
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="api/controller/home-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Map<String, List>> getHomeDetails() {
+	public ResponseEntity<Map<String, Object>> getHomeDetails() {
 		try {
-			Map<String, List> homeDetails = firebaseHomeService.getHomeDetails();
-			return new ResponseEntity<Map<String, List>>(homeDetails, HttpStatus.OK);
+			Map<String, Object> homeDetails = firebaseHomeService.getHomeDetails();
+			return new ResponseEntity<Map<String, Object>>(homeDetails, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
