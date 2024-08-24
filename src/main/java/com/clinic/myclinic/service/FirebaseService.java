@@ -1,25 +1,21 @@
 package com.clinic.myclinic.service;
 
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.clinic.myclinic.bean.RecentlyUsedTreatment;
-import com.clinic.myclinic.dao.FirebaseDAO;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.clinic.myclinic.dao.FirebaseUIDAO;
 
 @Service
 public class FirebaseService {
 	
 	@Autowired
-	FirebaseDAO firebaseDAO;
+	FirebaseUIDAO firebaseDAO;
 
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> getUiDetails(String contentIn) throws ExecutionException, InterruptedException {
 		Map<String, Object> textDetails = firebaseDAO.getUiDetails(contentIn);
 		
@@ -45,12 +41,4 @@ public class FirebaseService {
 		return uiDetails;
 	}
 	
-	public Map<String, List> getHomeDetails() throws ExecutionException, InterruptedException {
-		Map<String, List> homeDetails = new HashMap<String, List>();
-		List<RecentlyUsedTreatment> treatmentList = firebaseDAO.getRecentlyUsedTreatment();
-		treatmentList.sort(Comparator.comparingLong(RecentlyUsedTreatment::getCount).reversed());
-		
-		homeDetails.put("recent_treatment", treatmentList.stream().limit(3).toList());
-		return homeDetails;
-	}
 }

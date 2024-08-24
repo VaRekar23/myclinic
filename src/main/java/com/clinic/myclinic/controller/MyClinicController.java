@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
 
 @CrossOrigin
@@ -22,6 +23,8 @@ public class MyClinicController {
 
 	@Autowired
 	FirebaseService firebaseService;
+	@Autowired
+	FirebaseHomeService firebaseHomeService;
 	
 	@RequestMapping(value="api/controller/ui-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, Object>> getUiDetails(@RequestParam String contentIn) {
@@ -43,10 +46,11 @@ public class MyClinicController {
 		}
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="api/controller/home-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, List>> getHomeDetails() {
 		try {
-			Map<String, List> homeDetails = firebaseService.getHomeDetails();
+			Map<String, List> homeDetails = firebaseHomeService.getHomeDetails();
 			return new ResponseEntity<Map<String, List>>(homeDetails, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
