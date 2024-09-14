@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import com.clinic.myclinic.bean.TreatmentFeedback;
+import com.clinic.myclinic.model.TreatmentFeedback;
 
 @Repository
 public class FirebaseHomeDAO {

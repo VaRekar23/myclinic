@@ -10,14 +10,14 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.clinic.myclinic.bean.CustomerFeedback;
-import com.clinic.myclinic.bean.OverallFeedback;
-import com.clinic.myclinic.bean.RecentlyUsedTreatment;
-import com.clinic.myclinic.bean.TreatmentCategory;
-import com.clinic.myclinic.bean.TreatmentFeedback;
-import com.clinic.myclinic.bean.TreatmentSubcategory;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
+import com.clinic.myclinic.model.CustomerFeedback;
+import com.clinic.myclinic.model.OverallFeedback;
+import com.clinic.myclinic.model.RecentlyUsedTreatment;
+import com.clinic.myclinic.model.TreatmentCategory;
+import com.clinic.myclinic.model.TreatmentFeedback;
+import com.clinic.myclinic.model.TreatmentSubcategory;
 
 @Service
 public class FirebaseHomeService {

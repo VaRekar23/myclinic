@@ -1,4 +1,4 @@
-package com.clinic.myclinic.bean;
+package com.clinic.myclinic.model;
 
 import java.util.Date;
 

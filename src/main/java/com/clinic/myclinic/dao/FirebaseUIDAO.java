@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.google.cloud.Timestamp;
+
 @Repository
 public class FirebaseUIDAO {
 	
@@ -25,6 +27,10 @@ public class FirebaseUIDAO {
 		}
 		
 		return firebaseHelper.getData("header-details", documentKey);
+	}
+	
+	public Timestamp storeUiDetails(String contentIn, Object object, String documentKey) throws InterruptedException, ExecutionException {
+		return firebaseHelper.storeUIData(contentIn, object, documentKey);
 	}
 
 }

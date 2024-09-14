@@ -1,6 +1,5 @@
 package com.clinic.myclinic.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -9,11 +8,13 @@ import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
 
@@ -46,12 +47,21 @@ public class MyClinicController {
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
 	@RequestMapping(value="api/controller/home-details", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Map<String, Object>> getHomeDetails() {
 		try {
 			Map<String, Object> homeDetails = firebaseHomeService.getHomeDetails();
 			return new ResponseEntity<Map<String, Object>>(homeDetails, HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/update-homedetails", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateHomeDetails(@RequestBody HomeUiBeans homeUiBeans, @RequestParam String contentIn) {
+		try {
+			firebaseService.storeHomeUiDetails(homeUiBeans, contentIn);
+			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
