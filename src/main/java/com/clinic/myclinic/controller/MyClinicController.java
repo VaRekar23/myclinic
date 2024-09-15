@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
@@ -61,6 +62,16 @@ public class MyClinicController {
 	public ResponseEntity<String> updateHomeDetails(@RequestBody HomeUiBeans homeUiBeans, @RequestParam String contentIn) {
 		try {
 			firebaseService.storeHomeUiDetails(homeUiBeans, contentIn);
+			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/update-aboutdetails", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> updateAboutDetails(@RequestBody AboutUiBeans aboutUiBeans, @RequestParam String contentIn) {
+		try {
+			firebaseService.storeAboutUiDetails(aboutUiBeans, contentIn);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

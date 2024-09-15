@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.dao.FirebaseUIDAO;
 import com.google.cloud.Timestamp;
@@ -45,6 +46,10 @@ public class FirebaseService {
 	
 	public Timestamp storeHomeUiDetails(HomeUiBeans homeUiBeans, String contentIn) throws InterruptedException, ExecutionException {
 		return firebaseDAO.storeUiDetails(contentIn, homeUiBeans, "home");
+	}
+	
+	public Timestamp storeAboutUiDetails(AboutUiBeans aboutUiBeans, String contentIn) throws InterruptedException, ExecutionException {
+		return firebaseDAO.storeUiDetails(contentIn, aboutUiBeans, "about");
 	}
 	
 }
