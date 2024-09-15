@@ -7,7 +7,7 @@ public class AboutUiBeans {
 	private String degree;
 	private String intro;
 	private String img_path;
-	private List<AddressBeans> listAddressBeans;
+	private List<AddressBeans> addresses;
 	
 	public String getDr_name() {
 		return dr_name;
@@ -34,9 +34,9 @@ public class AboutUiBeans {
 		this.img_path = img_path;
 	}
 	public List<AddressBeans> getListAddressBeans() {
-		return listAddressBeans;
+		return addresses;
 	}
-	public void setListAddressBeans(List<AddressBeans> listAddressBeans) {
-		this.listAddressBeans = listAddressBeans;
+	public void setListAddressBeans(List<AddressBeans> addresses) {
+		this.addresses = addresses;
 	}
 }

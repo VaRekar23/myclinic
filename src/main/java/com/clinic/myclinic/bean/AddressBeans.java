@@ -9,7 +9,7 @@ public class AddressBeans {
 	private String city;
 	private String phone;
 	private String map_url;
-	private List<WorkingBeans> listWorkingBeans;
+	private List<WorkingBeans> workings;
 	
 	public String getClinic_name() {
 		return clinic_name;
@@ -48,10 +48,10 @@ public class AddressBeans {
 		this.map_url = map_url;
 	}
 	public List<WorkingBeans> getListWorkingBeans() {
-		return listWorkingBeans;
+		return workings;
 	}
-	public void setListWorkingBeans(List<WorkingBeans> listWorkingBeans) {
-		this.listWorkingBeans = listWorkingBeans;
+	public void setListWorkingBeans(List<WorkingBeans> workings) {
+		this.workings = workings;
 	}
 	
 }
