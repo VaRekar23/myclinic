@@ -7,6 +7,8 @@ public class AddressBeans {
 	private String address_1;
 	private String address_2;
 	private String city;
+	private String state;
+	private String pin_code;
 	private String phone;
 	private String map_url;
 	private List<WorkingBeans> workings;
@@ -19,6 +21,18 @@ public class AddressBeans {
 	}
 	public String getAddress_1() {
 		return address_1;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getPin_code() {
+		return pin_code;
+	}
+	public void setPin_code(String pin_code) {
+		this.pin_code = pin_code;
 	}
 	public void setAddress_1(String address_1) {
 		this.address_1 = address_1;
@@ -47,10 +61,10 @@ public class AddressBeans {
 	public void setMap_url(String map_url) {
 		this.map_url = map_url;
 	}
-	public List<WorkingBeans> getListWorkingBeans() {
+	public List<WorkingBeans> getWorkings() {
 		return workings;
 	}
-	public void setListWorkingBeans(List<WorkingBeans> workings) {
+	public void setWorkings(List<WorkingBeans> workings) {
 		this.workings = workings;
 	}
 	

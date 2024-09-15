@@ -33,10 +33,10 @@ public class AboutUiBeans {
 	public void setImg_path(String img_path) {
 		this.img_path = img_path;
 	}
-	public List<AddressBeans> getListAddressBeans() {
+	public List<AddressBeans> getAddresses() {
 		return addresses;
 	}
-	public void setListAddressBeans(List<AddressBeans> addresses) {
+	public void setAddresses(List<AddressBeans> addresses) {
 		this.addresses = addresses;
 	}
 }
