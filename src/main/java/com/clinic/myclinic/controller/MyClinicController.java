@@ -1,5 +1,6 @@
 package com.clinic.myclinic.controller;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
+import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
 
@@ -72,6 +74,26 @@ public class MyClinicController {
 	public ResponseEntity<String> updateAboutDetails(@RequestBody AboutUiBeans aboutUiBeans, @RequestParam String contentIn) {
 		try {
 			firebaseService.storeAboutUiDetails(aboutUiBeans, contentIn);
+			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-treatments", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<TreatmentCategory>> getTreatments() {
+		try {
+			List<TreatmentCategory> treatmentDetails = firebaseHomeService.getTreatments();
+			return new ResponseEntity<List<TreatmentCategory>>(treatmentDetails, HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-treatments", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeTreatments(@RequestBody List<TreatmentCategory> treatmentDetails) {
+		try {
+			firebaseHomeService.storeTreatments(treatmentDetails);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

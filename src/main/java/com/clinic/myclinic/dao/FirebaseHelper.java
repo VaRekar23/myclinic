@@ -49,4 +49,17 @@ public class FirebaseHelper {
 		
 		return result.getUpdateTime();
 	}
+	
+	public Timestamp storeDynamicData(Object object, String collection, String documentKey) throws InterruptedException, ExecutionException {
+		DocumentReference docRef = firestore.collection("test-data").document(collection);
+		
+		Map<String, Object> updates = new HashMap<String, Object>();
+		updates.put(documentKey, object);
+		
+		ApiFuture<WriteResult> future = docRef.update(updates);
+		
+		WriteResult result = future.get();
+		
+		return result.getUpdateTime();
+	}
 }

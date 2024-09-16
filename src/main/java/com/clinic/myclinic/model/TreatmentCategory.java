@@ -5,6 +5,7 @@ import java.util.List;
 public class TreatmentCategory {
 	private String id;
 	private String name;
+	private String image;
 	private List<TreatmentSubcategory> subCategoryList;
 	
 	public TreatmentCategory() {
@@ -38,6 +39,14 @@ public class TreatmentCategory {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public List<TreatmentSubcategory> getSubCategoryList() {

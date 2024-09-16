@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.clinic.myclinic.model.TreatmentFeedback;
+import com.google.cloud.Timestamp;
 
 @Repository
 public class FirebaseHomeDAO {
@@ -45,5 +46,9 @@ public class FirebaseHomeDAO {
 		}
 		
 		return new TreatmentFeedback();
+	}
+	
+	public Timestamp storeDynamicData(Object object, String collection, String documentKey) throws InterruptedException, ExecutionException {
+		return firebaseHelper.storeDynamicData(object, collection, documentKey);
 	}
 }

@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.clinic.myclinic.bean.SubTreatmentBeans;
+import com.clinic.myclinic.bean.TreatmentBeans;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
 import com.clinic.myclinic.model.CustomerFeedback;
@@ -31,8 +33,7 @@ public class FirebaseHomeService {
 		recentTreatmentList.sort(Comparator.comparingLong(RecentlyUsedTreatment::getCount).reversed());
 		homeDetails.put("recent_treatment", recentTreatmentList.stream().limit(3).toList());
 		
-		List<TreatmentCategory> treatmentList = treatmentBuilder(firebaseHomeDAO.getTreatments());
-		homeDetails.put("treatments", treatmentList);
+		homeDetails.put("treatments", getTreatments());
 		
 		List<CustomerFeedback> feedbackList = feedbackBuilder(firebaseHomeDAO.getFeedback());
 		int totalFeedback = feedbackList.size();
@@ -45,6 +46,35 @@ public class FirebaseHomeService {
 		homeDetails.put("overall_feedback", overallFeedback);
 		
 		return homeDetails;
+	}
+	
+	public List<TreatmentCategory> getTreatments() throws ExecutionException, InterruptedException {
+		return treatmentBuilder(firebaseHomeDAO.getTreatments());
+	}
+	
+	public void storeTreatments(List<TreatmentCategory> treatmentDetails) throws ExecutionException, InterruptedException {
+		Map<String, TreatmentBeans> treatmentBeans = new HashMap<String, TreatmentBeans>();
+		Map<String, SubTreatmentBeans> subTreatmentBeans = new HashMap<String, SubTreatmentBeans>();
+		
+		for (TreatmentCategory treatmentCategory : treatmentDetails) {
+			TreatmentBeans treatment = new TreatmentBeans();
+			treatment.setId(treatmentCategory.getId());
+			treatment.setName(treatmentCategory.getName());
+			treatment.setImage(treatmentCategory.getImage());
+			treatmentBeans.put(treatmentCategory.getId(), treatment);
+			
+			for (TreatmentSubcategory treatmentSubcategory : treatmentCategory.getSubCategoryList()) {
+				SubTreatmentBeans subTreatment = new SubTreatmentBeans();
+				subTreatment.setId(treatmentSubcategory.getId());
+				subTreatment.setCategoryId(treatmentSubcategory.getCategoryId());
+				subTreatment.setName(treatmentSubcategory.getName());
+				subTreatmentBeans.put(treatmentSubcategory.getId(), subTreatment);
+			}
+		}
+		
+		firebaseHomeDAO.storeDynamicData(treatmentBeans, "treatments", "category");
+		firebaseHomeDAO.storeDynamicData(subTreatmentBeans, "treatments", "subcategory");
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -76,6 +106,7 @@ public class FirebaseHomeService {
 			String categoryId = (String) categoryMap.get("id");
 			treatmentCategory.setId(categoryId);
 			treatmentCategory.setName((String) categoryMap.get("name"));
+			treatmentCategory.setImage((String) categoryMap.get("image"));
 			
 			List<TreatmentSubcategory> subcategoryList = new ArrayList<TreatmentSubcategory>();
 			for (Map.Entry<String, Object> subcategoryEntry: ((Map<String, Object>) firebaseOutput.get("subcategory")).entrySet()) {
