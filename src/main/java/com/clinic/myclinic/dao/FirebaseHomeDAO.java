@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.model.TreatmentFeedback;
 import com.google.cloud.Timestamp;
 
@@ -32,20 +33,20 @@ public class FirebaseHomeDAO {
 		Map<String, Object> firebaseData = firebaseHelper.getData("test-data", "treatments");
 		Map<String, Object> subcategoryList = (Map<String, Object>) firebaseData.get("subcategory");
 		Map<String, Object> subcategoryData = (Map<String, Object>) subcategoryList.get(id);
-		if (!subcategoryData.isEmpty()) {
+		if (!Helper.isNullOrEmpty(subcategoryData)) {
 			String categoryId = (String) subcategoryData.get("category_id");
 			String subcategoryName = (String) subcategoryData.get("name");
 			
 			Map<String, Object> categoryList = (Map<String, Object>) firebaseData.get("category");
 			Map<String, Object> categoryData = (Map<String, Object>) categoryList.get(categoryId);
-			if (!categoryData.isEmpty()) {
+			if (!Helper.isNullOrEmpty(categoryData)) {
 				String categoryName = (String) categoryData.get("name");
 				
 				return new TreatmentFeedback(categoryName, subcategoryName);
 			}
 		}
 		
-		return new TreatmentFeedback();
+		return new TreatmentFeedback("", "");
 	}
 	
 	public Timestamp storeDynamicData(Object object, String collection, String documentKey) throws InterruptedException, ExecutionException {

@@ -3,7 +3,7 @@ package com.clinic.myclinic.bean;
 public class SubTreatmentBeans {
 	private String id;
 	private String name;
-	private String categoryId;
+	private String category_id;
 	
 	public String getId() {
 		return id;
@@ -17,11 +17,11 @@ public class SubTreatmentBeans {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getCategoryId() {
-		return categoryId;
+	public String getCategory_id() {
+		return category_id;
 	}
 	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+		this.category_id = categoryId;
 	}
 	
 }
