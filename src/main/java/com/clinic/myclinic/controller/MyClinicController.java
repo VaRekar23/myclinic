@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.model.TreatmentCategory;
+import com.clinic.myclinic.model.TreatmentQuestions;
 import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
 
@@ -95,6 +96,26 @@ public class MyClinicController {
 		try {
 			firebaseHomeService.storeTreatments(treatmentDetails);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-questions", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeQuestions(@RequestBody TreatmentQuestions treatmentQuestions) {
+		try {
+			firebaseHomeService.storeQuestions(treatmentQuestions);
+			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+	}
+	
+	@RequestMapping(value="api/controller/get-questions", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> getQuestions() {
+		try {
+			Map<String, Object> questions = firebaseHomeService.getQuestions();
+			return new ResponseEntity<Map<String, Object>>(questions, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

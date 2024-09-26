@@ -28,6 +28,10 @@ public class FirebaseHomeDAO {
 		return firebaseHelper.getData("test-data", "feedback");
 	}
 	
+	public Map<String, Object> getQuestions() throws ExecutionException, InterruptedException {
+		return firebaseHelper.getData("test-data", "questions");
+	}
+	
 	@SuppressWarnings("unchecked")
 	public TreatmentFeedback getFeedbackTreatment(String id) throws ExecutionException, InterruptedException {
 		Map<String, Object> firebaseData = firebaseHelper.getData("test-data", "treatments");
@@ -51,5 +55,17 @@ public class FirebaseHomeDAO {
 	
 	public Timestamp storeDynamicData(Object object, String collection, String documentKey) throws InterruptedException, ExecutionException {
 		return firebaseHelper.storeDynamicData(object, collection, documentKey);
+	}
+	
+	public Timestamp storeDynamicData(Object object, String parentCollection, String parentDocKey, String collection, String field) throws InterruptedException, ExecutionException {
+		return firebaseHelper.storeDynamicData(object, parentCollection, parentDocKey, collection, field);
+	}
+	
+	public void updateParentQuestions(String childQuestionID, String parentQuestionId, String parentOptionId) throws InterruptedException, ExecutionException {
+		firebaseHelper.updateParentQuestions(childQuestionID, parentQuestionId, parentOptionId);
+	}
+	
+	public void updateQuestionIdInSubCategory(String subCategoryId, String questionId)  throws InterruptedException, ExecutionException {
+		firebaseHelper.updateQuestionIdInSubCategory(subCategoryId, questionId);
 	}
 }

@@ -4,16 +4,18 @@ public class RecentlyUsedTreatment {
 	private String treatmentName;
 	private String imgPath;
 	private long count;
+	private String id;
 	
 	public RecentlyUsedTreatment() {
 		super();
 	}
 
-	public RecentlyUsedTreatment(String treatmentName, String imgPath, long count) {
+	public RecentlyUsedTreatment(String treatmentName, String imgPath, long count, String id) {
 		super();
 		this.treatmentName = treatmentName;
 		this.imgPath = imgPath;
 		this.count = count;
+		this.id = id;
 	}
 
 	public String getTreatmentName() {
@@ -38,5 +40,13 @@ public class RecentlyUsedTreatment {
 
 	public void setCount(long count) {
 		this.count = count;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

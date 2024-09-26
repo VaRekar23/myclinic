@@ -4,7 +4,17 @@ public class SubTreatmentBeans {
 	private String id;
 	private String name;
 	private String category_id;
+	private String question_id;
 	
+	public String getQuestion_id() {
+		return question_id;
+	}
+	public void setQuestion_id(String question_id) {
+		this.question_id = question_id;
+	}
+	public void setCategory_id(String category_id) {
+		this.category_id = category_id;
+	}
 	public String getId() {
 		return id;
 	}
