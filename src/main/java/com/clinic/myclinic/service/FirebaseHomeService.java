@@ -166,7 +166,8 @@ public class FirebaseHomeService {
 					TreatmentSubcategory treatmentSubcategory = new TreatmentSubcategory(
 							(String) subcategoryMap.get("id"), 
 							(String) subcategoryMap.get("name"),
-							categoryId);
+							categoryId,
+							(String) subcategoryMap.get("question_id"));
 					subcategoryList.add(treatmentSubcategory);
 				}
 			}
