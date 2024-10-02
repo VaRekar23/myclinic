@@ -69,11 +69,4 @@ public class TreatmentQuestions {
 	public void setParentOption(String parentOption) {
 		this.parentOption = parentOption;
 	}
-
-	@Override
-	public String toString() {
-		return "TreatmentQuestions [treatmentId=" + treatmentId + ", subTreatmentId=" + subTreatmentId
-				+ ", isParentQuestion=" + isParentQuestion + ", question=" + question + ", options=" + options
-				+ ", parentQuestion=" + parentQuestion + ", parentOption=" + parentOption + "]";
-	}
 }

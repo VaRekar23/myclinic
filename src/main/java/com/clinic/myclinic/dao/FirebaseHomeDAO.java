@@ -65,7 +65,11 @@ public class FirebaseHomeDAO {
 		firebaseHelper.updateParentQuestions(childQuestionID, parentQuestionId, parentOptionId);
 	}
 	
-	public void updateQuestionIdInSubCategory(String subCategoryId, String questionId)  throws InterruptedException, ExecutionException {
+	public void updateQuestionIdInSubCategory(String subCategoryId, String questionId) throws InterruptedException, ExecutionException {
 		firebaseHelper.updateQuestionIdInSubCategory(subCategoryId, questionId);
+	}
+	
+	public Map<String, Object> getUserData(String userId) throws InterruptedException, ExecutionException {
+		return firebaseHelper.getUserData(userId);
 	}
 }

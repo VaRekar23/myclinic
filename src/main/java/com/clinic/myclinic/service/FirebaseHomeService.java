@@ -16,6 +16,7 @@ import com.clinic.myclinic.bean.QuestionBeans;
 import com.clinic.myclinic.bean.RecentlyUsedTreatmentBeans;
 import com.clinic.myclinic.bean.SubTreatmentBeans;
 import com.clinic.myclinic.bean.TreatmentBeans;
+import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
 import com.clinic.myclinic.model.CustomerFeedback;
@@ -25,6 +26,8 @@ import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.model.TreatmentFeedback;
 import com.clinic.myclinic.model.TreatmentQuestions;
 import com.clinic.myclinic.model.TreatmentSubcategory;
+import com.clinic.myclinic.model.UserData;
+import com.google.cloud.Timestamp;
 
 @Service
 public class FirebaseHomeService {
@@ -102,7 +105,6 @@ public class FirebaseHomeService {
 	}
 	
 	public void storeQuestions(TreatmentQuestions treatmentQuestions) throws ExecutionException, InterruptedException {
-		System.out.println(treatmentQuestions.toString());
 		QuestionBeans question = new QuestionBeans();
 		List<OptionBeans> options = new ArrayList<OptionBeans>();
 		String uniqueId = UUID.randomUUID().toString();
@@ -203,5 +205,20 @@ public class FirebaseHomeService {
 		}
 		
 		return feedbackList;
+	}
+	
+	public Map<String, Object> getUserData(String userId) throws InterruptedException, ExecutionException {
+		return firebaseHomeDAO.getUserData(userId);
+	}
+	
+	public Timestamp storeUser(UserData userData) throws InterruptedException, ExecutionException {
+		UserBean userBean = new UserBean();
+		userBean.setUserId(userData.getUserId());
+		userBean.setIsAdmin(userData.getIsAdmin());
+		userBean.setEncryptedData(userData.getEncryptedData());
+		userBean.setIsParent(userData.getIsParent());
+		userBean.setParentId(userData.getParentId());
+		
+		return firebaseHomeDAO.storeDynamicData(userBean, "user", userData.getUserId());
 	}
 }

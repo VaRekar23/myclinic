@@ -19,6 +19,7 @@ import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.model.TreatmentQuestions;
+import com.clinic.myclinic.model.UserData;
 import com.clinic.myclinic.service.FirebaseHomeService;
 import com.clinic.myclinic.service.FirebaseService;
 
@@ -116,6 +117,26 @@ public class MyClinicController {
 		try {
 			Map<String, Object> questions = firebaseHomeService.getQuestions();
 			return new ResponseEntity<Map<String, Object>>(questions, HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-users", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> getUserData(@RequestParam String userId) {
+		try {
+			Map<String, Object> userDetails = firebaseHomeService.getUserData(userId);
+			return new ResponseEntity<>(userDetails, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-user", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeUserData(@RequestBody UserData userData) {
+		try {
+			firebaseHomeService.storeUser(userData);
+			return new ResponseEntity<String>("User Added", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

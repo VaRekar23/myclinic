@@ -110,7 +110,7 @@ public class FirebaseHelper {
 		}
 	}
 	
-	public void updateQuestionIdInSubCategory(String subCategoryId, String questionId)  throws InterruptedException, ExecutionException {
+	public void updateQuestionIdInSubCategory(String subCategoryId, String questionId) throws InterruptedException, ExecutionException {
 		DocumentSnapshot document = firestore.collection("test-data").document("treatments").get().get();
 		if (document.exists()) {
 			@SuppressWarnings("unchecked")
@@ -131,5 +131,13 @@ public class FirebaseHelper {
 				}
 			}
 		}
+	}
+	
+	public Map<String, Object> getUserData(String userId) throws InterruptedException, ExecutionException {
+		DocumentSnapshot document = firestore.collection("test-data").document("user").get().get();
+		if (document.exists()) {
+			return (Map<String, Object>) document.get(userId);
+		}
+		return new HashMap<String, Object>();
 	}
 }
