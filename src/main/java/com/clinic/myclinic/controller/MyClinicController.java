@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
+import com.clinic.myclinic.model.Orders;
 import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.model.TreatmentQuestions;
 import com.clinic.myclinic.model.UserData;
@@ -38,6 +39,7 @@ public class MyClinicController {
 			Map<String, Object> textDetails = firebaseService.getUiDetails(contentIn);
 			return new ResponseEntity<>(textDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("UI-Details Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -48,6 +50,7 @@ public class MyClinicController {
 			Map<String, Object> uiDetails = firebaseService.getHeaderDetails(role);
 			return new ResponseEntity<>(uiDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Header-Details Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -58,6 +61,7 @@ public class MyClinicController {
 			Map<String, Object> homeDetails = firebaseHomeService.getHomeDetails();
 			return new ResponseEntity<Map<String, Object>>(homeDetails, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Home-Details Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -68,6 +72,7 @@ public class MyClinicController {
 			firebaseService.storeHomeUiDetails(homeUiBeans, contentIn);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Update-HomeDetails Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -78,6 +83,7 @@ public class MyClinicController {
 			firebaseService.storeAboutUiDetails(aboutUiBeans, contentIn);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Update-AboutDetails Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -88,6 +94,7 @@ public class MyClinicController {
 			List<TreatmentCategory> treatmentDetails = firebaseHomeService.getTreatments();
 			return new ResponseEntity<List<TreatmentCategory>>(treatmentDetails, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Get-Treatments Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -98,6 +105,7 @@ public class MyClinicController {
 			firebaseHomeService.storeTreatments(treatmentDetails);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-Treatments Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -108,6 +116,7 @@ public class MyClinicController {
 			firebaseHomeService.storeQuestions(treatmentQuestions);
 			return new ResponseEntity<String>("Details Updated", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-Questions Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}	
 	}
@@ -118,6 +127,7 @@ public class MyClinicController {
 			Map<String, Object> questions = firebaseHomeService.getQuestions();
 			return new ResponseEntity<Map<String, Object>>(questions, HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Get-Questions Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -128,6 +138,7 @@ public class MyClinicController {
 			Map<String, Object> userDetails = firebaseHomeService.getUserData(userId);
 			return new ResponseEntity<>(userDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-Users Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -138,6 +149,29 @@ public class MyClinicController {
 			firebaseHomeService.storeUser(userData);
 			return new ResponseEntity<String>("User Added", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-User Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-allusers", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<UserData>> getAllUserData(@RequestParam String userId) {
+		try {
+			List<UserData> userDetails = firebaseHomeService.getAllUserData(userId);
+			return new ResponseEntity<>(userDetails, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-AllUsers Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-order", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeOrder(@RequestBody Orders orders) {
+		try {
+			firebaseHomeService.storeOrder(orders);
+			return new ResponseEntity<String>("Order Added", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-Order Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

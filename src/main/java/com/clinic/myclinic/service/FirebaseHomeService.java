@@ -1,17 +1,21 @@
 package com.clinic.myclinic.service;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.clinic.myclinic.bean.OptionBeans;
+import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.bean.QuestionBeans;
 import com.clinic.myclinic.bean.RecentlyUsedTreatmentBeans;
 import com.clinic.myclinic.bean.SubTreatmentBeans;
@@ -20,6 +24,7 @@ import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
 import com.clinic.myclinic.model.CustomerFeedback;
+import com.clinic.myclinic.model.Orders;
 import com.clinic.myclinic.model.OverallFeedback;
 import com.clinic.myclinic.model.RecentlyUsedTreatment;
 import com.clinic.myclinic.model.TreatmentCategory;
@@ -129,6 +134,89 @@ public class FirebaseHomeService {
 		}
 	}
 	
+	public Map<String, Object> getUserData(String userId) throws InterruptedException, ExecutionException {
+		return firebaseHomeDAO.getUserData(userId);
+	}
+	
+	public Timestamp storeUser(UserData userData) throws InterruptedException, ExecutionException {
+		UserBean userBean = new UserBean();
+		userBean.setUserId(userData.getUserId());
+		userBean.setIsAdmin(userData.getIsAdmin());
+		userBean.setEncryptedData(userData.getEncryptedData());
+		userBean.setIsParent(userData.getIsParent());
+		userBean.setParentId(userData.getParentId());
+		
+		return firebaseHomeDAO.storeDynamicData(userBean, "user", userData.getUserId());
+	}
+	
+	public List<UserData> getAllUserData(String userId) throws InterruptedException, ExecutionException {
+		List<UserData> listAllUserData = new ArrayList<UserData>();
+		Map<String, Object> allUserData = firebaseHomeDAO.getAllUserData();
+		for (Map.Entry<String, Object> entry: allUserData.entrySet()) {
+			Map<String, Object> userData = (Map<String, Object>) entry.getValue();
+			if (userId.equals(userData.get("parentId"))) {
+				UserData user = new UserData(
+						(String) userData.get("userId"),
+						(Boolean) userData.get("isAdmin"),
+						(Boolean) userData.get("isParent"),
+						(String) userData.get("encryptedData"),
+						(String) userData.get("parentId"));
+				
+				listAllUserData.add(user);
+			}
+		}
+		
+		return listAllUserData;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void storeOrder(Orders order) throws InterruptedException, ExecutionException {
+		String uniqueId = UUID.randomUUID().toString();
+		
+		OrderBeans orderBean = new OrderBeans();
+		orderBean.setOrderId(uniqueId);
+		orderBean.setUserId(order.getUserId());
+		orderBean.setTreatmentId(order.getTreatmentId());
+		orderBean.setSubTreatmentId(order.getSubTreatmentId());
+		orderBean.setAdditionalInfo(order.getAdditionalInfo());
+		orderBean.setQuestions(order.getQuestions());
+		orderBean.setStatus("Pending Doctor Review");
+		orderBean.setCreateDate(new Date());
+		
+		Map<String, Object> userData = firebaseHomeDAO.getUserData(order.getUserId());
+		
+		if ((Boolean) userData.get("isParent")) {
+			orderBean.setParentId(order.getUserId());
+		} else {
+			orderBean.setParentId((String) userData.get("parentId"));
+		}
+		
+		firebaseHomeDAO.storeDynamicData(orderBean, "orders", uniqueId);
+		
+		Map<Object, Object> filteredList = firebaseHomeDAO.getRecentlyUsedTreatment().entrySet().stream()
+								.filter(entry -> {
+									Map<String, Object> recentTreatment = (Map<String, Object>) entry.getValue();
+									return recentTreatment.get("id").equals(order.getSubTreatmentId());
+								})
+								.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+		
+		if (! Helper.isNullOrEmpty(filteredList)) {
+			for (Entry<Object, Object> treatments : filteredList.entrySet()) {
+				Map<String, Object> treatment = (Map<String, Object>) treatments.getValue();
+				RecentlyUsedTreatmentBeans recentTreatment = new RecentlyUsedTreatmentBeans();
+				recentTreatment.setId((String) treatment.get("id"));
+				recentTreatment.setImg_path((String) treatment.get("img_path"));
+				recentTreatment.setTreatment_name((String) treatment.get("treatment_name"));
+				long countLong = (Long) treatment.get("count");
+				int countInt = (int) countLong;
+				recentTreatment.setCount(countInt+1);
+
+				firebaseHomeDAO.storeDynamicData(recentTreatment, "recently_used_treatment", recentTreatment.getTreatment_name());
+			}
+		}
+		
+	}
+	
 	@SuppressWarnings("unchecked")
 	private List<RecentlyUsedTreatment> frequentTreatmentBuilder(Map<String, Object> firebaseOutput) {
 		List<RecentlyUsedTreatment> recentlyUsedTreatmentsList = new ArrayList<RecentlyUsedTreatment>();
@@ -205,20 +293,5 @@ public class FirebaseHomeService {
 		}
 		
 		return feedbackList;
-	}
-	
-	public Map<String, Object> getUserData(String userId) throws InterruptedException, ExecutionException {
-		return firebaseHomeDAO.getUserData(userId);
-	}
-	
-	public Timestamp storeUser(UserData userData) throws InterruptedException, ExecutionException {
-		UserBean userBean = new UserBean();
-		userBean.setUserId(userData.getUserId());
-		userBean.setIsAdmin(userData.getIsAdmin());
-		userBean.setEncryptedData(userData.getEncryptedData());
-		userBean.setIsParent(userData.getIsParent());
-		userBean.setParentId(userData.getParentId());
-		
-		return firebaseHomeDAO.storeDynamicData(userBean, "user", userData.getUserId());
 	}
 }

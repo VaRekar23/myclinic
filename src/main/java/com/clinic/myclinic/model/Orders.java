@@ -1,0 +1,56 @@
+package com.clinic.myclinic.model;
+
+import java.util.List;
+
+public class Orders {
+	private String userId;
+	private String treatmentId;
+	private String subTreatmentId;
+	private String additionalInfo;
+	private List<OrderQuestion> questions;
+	
+	public Orders() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	public Orders(String userId, String treatmentId, String subTreatmentId, String additionalInfo,
+			List<OrderQuestion> questions) {
+		super();
+		this.userId = userId;
+		this.treatmentId = treatmentId;
+		this.subTreatmentId = subTreatmentId;
+		this.additionalInfo = additionalInfo;
+		this.questions = questions;
+	}
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getTreatmentId() {
+		return treatmentId;
+	}
+	public void setTreatmentId(String treatmentId) {
+		this.treatmentId = treatmentId;
+	}
+	public String getSubTreatmentId() {
+		return subTreatmentId;
+	}
+	public void setSubTreatmentId(String subTreatmentId) {
+		this.subTreatmentId = subTreatmentId;
+	}
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
+	public List<OrderQuestion> getQuestions() {
+		return questions;
+	}
+	public void setQuestions(List<OrderQuestion> questions) {
+		this.questions = questions;
+	}
+}
