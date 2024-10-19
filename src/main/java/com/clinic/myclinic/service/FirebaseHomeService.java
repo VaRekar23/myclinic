@@ -24,6 +24,8 @@ import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
 import com.clinic.myclinic.model.CustomerFeedback;
+import com.clinic.myclinic.model.OrderDetails;
+import com.clinic.myclinic.model.OrderQuestion;
 import com.clinic.myclinic.model.Orders;
 import com.clinic.myclinic.model.OverallFeedback;
 import com.clinic.myclinic.model.RecentlyUsedTreatment;
@@ -217,6 +219,24 @@ public class FirebaseHomeService {
 		
 	}
 	
+	public List<OrderDetails> getOrders(String userId) throws InterruptedException, ExecutionException {
+		Map<String, Object> orderDetails = firebaseHomeDAO.getOrders();
+		Map<String, Object> userData = firebaseHomeDAO.getAllUserData();
+		Map<String, Object> treatment = firebaseHomeDAO.getTreatments();
+		
+		if (userId.isBlank()) {
+			return orderDetailsBuilder(orderDetails, userData, treatment);
+		} else {
+			Map<String, Object> filteredOrder = orderDetails.entrySet().stream()
+					.filter(entry -> {
+						Map<String, Object> orders = (Map<String, Object>) entry.getValue();
+						return orders.get("parentId").equals(userId);
+					})
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+			return orderDetailsBuilder(filteredOrder, userData, treatment);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	private List<RecentlyUsedTreatment> frequentTreatmentBuilder(Map<String, Object> firebaseOutput) {
 		List<RecentlyUsedTreatment> recentlyUsedTreatmentsList = new ArrayList<RecentlyUsedTreatment>();
@@ -293,5 +313,32 @@ public class FirebaseHomeService {
 		}
 		
 		return feedbackList;
+	}
+	
+	private List<OrderDetails> orderDetailsBuilder(Map<String, Object> orders, Map<String, Object> users, Map<String, Object> treatments) {
+		List<OrderDetails> listOrderDeatils = new ArrayList<OrderDetails>();
+		
+		for (Map.Entry<String, Object> orderEntry : orders.entrySet()) {
+			Map<String, Object> orderMap = (Map<String, Object>) orderEntry.getValue();
+			
+			OrderDetails orderDetails = new OrderDetails();
+			orderDetails.setOrderId((String)orderMap.get("orderId"));
+			orderDetails.setAdditionalInfo((String) orderMap.get("additionalInfo"));
+			orderDetails.setStatus((String) orderMap.get("status"));
+			Timestamp timestamp = (Timestamp) orderMap.get("createDate");
+			orderDetails.setCreateDate(timestamp.toDate());
+			orderDetails.setQuestions((List<OrderQuestion>) orderMap.get("questions"));
+			
+			Map<String, Object> user = (Map<String, Object>) users.get((String) orderMap.get("userId"));
+			orderDetails.setUserData((String) user.get("encryptedData"));
+			
+			Map<String, Object> subTreatments = (Map<String, Object>) treatments.get("subcategory");
+			Map<String, Object> subTreatment = (Map<String, Object>) subTreatments.get((String) orderMap.get("subTreatmentId"));
+			orderDetails.setTreatmentName((String) subTreatment.get("name"));
+			
+			listOrderDeatils.add(orderDetails);
+		}
+		listOrderDeatils.sort(Comparator.comparing(OrderDetails::getCreateDate).reversed());
+		return listOrderDeatils;
 	}
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
+import com.clinic.myclinic.model.OrderDetails;
 import com.clinic.myclinic.model.Orders;
 import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.model.TreatmentQuestions;
@@ -172,6 +173,17 @@ public class MyClinicController {
 			return new ResponseEntity<String>("Order Added", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			System.out.println("Store-Order Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-orders", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<OrderDetails>> getOrders(@RequestParam String userId) {
+		try {
+			List<OrderDetails> orderDetails = firebaseHomeService.getOrders(userId);
+			return new ResponseEntity<>(orderDetails, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-Orders Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

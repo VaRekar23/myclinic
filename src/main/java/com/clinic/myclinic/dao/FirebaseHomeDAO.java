@@ -76,4 +76,8 @@ public class FirebaseHomeDAO {
 	public Map<String, Object> getAllUserData() throws InterruptedException, ExecutionException {
 		return firebaseHelper.getData("test-data", "user");
 	}
+	
+	public Map<String, Object> getOrders() throws InterruptedException, ExecutionException {
+		return firebaseHelper.getData("test-data", "orders");
+	}
 }
