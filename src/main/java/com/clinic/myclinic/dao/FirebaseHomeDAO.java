@@ -6,7 +6,9 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.common.Helper;
+import com.clinic.myclinic.model.OrderDetails;
 import com.clinic.myclinic.model.TreatmentFeedback;
 import com.google.cloud.Timestamp;
 
@@ -79,5 +81,9 @@ public class FirebaseHomeDAO {
 	
 	public Map<String, Object> getOrders() throws InterruptedException, ExecutionException {
 		return firebaseHelper.getData("test-data", "orders");
+	}
+	
+	public void updateOrders(OrderBeans orderDetails) throws InterruptedException, ExecutionException {
+		firebaseHelper.updateOrders(orderDetails);
 	}
 }

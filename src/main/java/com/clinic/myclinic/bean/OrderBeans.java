@@ -3,6 +3,7 @@ package com.clinic.myclinic.bean;
 import java.util.Date;
 import java.util.List;
 
+import com.clinic.myclinic.model.MedicineWithAmount;
 import com.clinic.myclinic.model.OrderQuestion;
 
 public class OrderBeans {
@@ -15,7 +16,16 @@ public class OrderBeans {
 	private String status;
 	private Date createDate;
 	private List<OrderQuestion> questions;
-	
+	private String doctorComments;
+	private List<MedicineWithAmount> items;
+	private int totalAmount;
+	private String prescriptionDocPath;
+	private String paymentId;
+	private Date paymentDate;
+	private String trackingId;
+	private Date courierDate;
+	private String feedbackId;
+
 	public OrderBeans() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -92,4 +102,77 @@ public class OrderBeans {
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
+
+	public String getDoctorComments() {
+		return doctorComments;
+	}
+
+	public void setDoctorComments(String doctorComments) {
+		this.doctorComments = doctorComments;
+	}
+
+	public List<MedicineWithAmount> getItems() {
+		return items;
+	}
+
+	public void setItems(List<MedicineWithAmount> items) {
+		this.items = items;
+	}
+
+	public int getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(int totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getPrescriptionDocPath() {
+		return prescriptionDocPath;
+	}
+
+	public void setPrescriptionDocPath(String prescriptionDocPath) {
+		this.prescriptionDocPath = prescriptionDocPath;
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
+
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public void setTrackingId(String trackingId) {
+		this.trackingId = trackingId;
+	}
+
+	public Date getCourierDate() {
+		return courierDate;
+	}
+
+	public void setCourierDate(Date courierDate) {
+		this.courierDate = courierDate;
+	}
+
+	public String getFeedbackId() {
+		return feedbackId;
+	}
+
+	public void setFeedbackId(String feedbackId) {
+		this.feedbackId = feedbackId;
+	}
+	
 }

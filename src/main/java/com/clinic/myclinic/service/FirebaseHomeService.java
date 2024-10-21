@@ -22,8 +22,10 @@ import com.clinic.myclinic.bean.SubTreatmentBeans;
 import com.clinic.myclinic.bean.TreatmentBeans;
 import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
+import com.clinic.myclinic.common.OrderStatus;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
 import com.clinic.myclinic.model.CustomerFeedback;
+import com.clinic.myclinic.model.MedicineWithAmount;
 import com.clinic.myclinic.model.OrderDetails;
 import com.clinic.myclinic.model.OrderQuestion;
 import com.clinic.myclinic.model.Orders;
@@ -182,8 +184,10 @@ public class FirebaseHomeService {
 		orderBean.setSubTreatmentId(order.getSubTreatmentId());
 		orderBean.setAdditionalInfo(order.getAdditionalInfo());
 		orderBean.setQuestions(order.getQuestions());
-		orderBean.setStatus("Pending Doctor Review");
+		orderBean.setStatus("PDR");
 		orderBean.setCreateDate(new Date());
+		
+		orderBean.setItems(new ArrayList<MedicineWithAmount>());
 		
 		Map<String, Object> userData = firebaseHomeDAO.getUserData(order.getUserId());
 		
@@ -219,13 +223,18 @@ public class FirebaseHomeService {
 		
 	}
 	
+	public void updateOrder(OrderBeans orderDetails) throws InterruptedException, ExecutionException {
+		firebaseHomeDAO.updateOrders(orderDetails);
+	}
+	
 	public List<OrderDetails> getOrders(String userId) throws InterruptedException, ExecutionException {
 		Map<String, Object> orderDetails = firebaseHomeDAO.getOrders();
 		Map<String, Object> userData = firebaseHomeDAO.getAllUserData();
 		Map<String, Object> treatment = firebaseHomeDAO.getTreatments();
+		Map<String, Object> feedback = firebaseHomeDAO.getFeedback();
 		
 		if (userId.isBlank()) {
-			return orderDetailsBuilder(orderDetails, userData, treatment);
+			return orderDetailsBuilder(orderDetails, userData, treatment, feedback);
 		} else {
 			Map<String, Object> filteredOrder = orderDetails.entrySet().stream()
 					.filter(entry -> {
@@ -233,7 +242,7 @@ public class FirebaseHomeService {
 						return orders.get("parentId").equals(userId);
 					})
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-			return orderDetailsBuilder(filteredOrder, userData, treatment);
+			return orderDetailsBuilder(filteredOrder, userData, treatment, feedback);
 		}
 	}
 	
@@ -296,17 +305,19 @@ public class FirebaseHomeService {
 			Map<String, Object> feedbackData = (Map<String, Object>) entry.getValue();
 			
 			CustomerFeedback feedback = new CustomerFeedback();
+			feedback.setFeedbackId((String) feedbackData.get("feedbackId"));
 			feedback.setAfterPhoto((String) feedbackData.get("after-photo"));
 			feedback.setBeforePhoto((String) feedbackData.get("before-photo"));
 			feedback.setComments((String) feedbackData.get("comments"));
-			feedback.setCustomerName((String) feedbackData.get("customerName"));
 			feedback.setCreateDate(Helper.dateFormater(feedbackData.get("date")));
 			feedback.setRatings((Long) feedbackData.get("ratings"));
+			
+			String userId = (String) feedbackData.get("customerId");
+			feedback.setCustomerData((String) firebaseHomeDAO.getUserData(userId).get("encryptedData"));
 			
 			String treatmentId = (String) feedbackData.get("treatment-id");
 			TreatmentFeedback treatmentFeedback = firebaseHomeDAO.getFeedbackTreatment(treatmentId);
 			
-			feedback.setTreatmentCategory(treatmentFeedback.getCategory());
 			feedback.setTreatmentSubcategory(treatmentFeedback.getSubcategory());
 			
 			feedbackList.add(feedback);
@@ -315,7 +326,7 @@ public class FirebaseHomeService {
 		return feedbackList;
 	}
 	
-	private List<OrderDetails> orderDetailsBuilder(Map<String, Object> orders, Map<String, Object> users, Map<String, Object> treatments) {
+	private List<OrderDetails> orderDetailsBuilder(Map<String, Object> orders, Map<String, Object> users, Map<String, Object> treatments, Map<String, Object> feedbacks) {
 		List<OrderDetails> listOrderDeatils = new ArrayList<OrderDetails>();
 		
 		for (Map.Entry<String, Object> orderEntry : orders.entrySet()) {
@@ -324,10 +335,20 @@ public class FirebaseHomeService {
 			OrderDetails orderDetails = new OrderDetails();
 			orderDetails.setOrderId((String)orderMap.get("orderId"));
 			orderDetails.setAdditionalInfo((String) orderMap.get("additionalInfo"));
-			orderDetails.setStatus((String) orderMap.get("status"));
-			Timestamp timestamp = (Timestamp) orderMap.get("createDate");
-			orderDetails.setCreateDate(timestamp.toDate());
+			orderDetails.setStatus(OrderStatus.getDescriptionByCode((String) orderMap.get("status")));
 			orderDetails.setQuestions((List<OrderQuestion>) orderMap.get("questions"));
+			orderDetails.setDoctorComments((String) orderMap.get("doctorComments"));
+			orderDetails.setItems((List<MedicineWithAmount>) orderMap.get("items"));
+			orderDetails.setPrescriptionDocPath((String) orderMap.get("prescriptionDocPath"));
+			orderDetails.setPaymentId((String) orderMap.get("paymentId"));
+			orderDetails.setTrackingId((String) orderMap.get("trackingId"));
+			
+			long totalAmount = (Long) orderMap.get("totalAmount");
+			orderDetails.setTotalAmount((int) totalAmount);
+			
+			orderDetails.setCreateDate(Helper.dateFormater(orderMap.get("createDate")));
+			orderDetails.setPaymentDate(Helper.dateFormater(orderMap.get("paymentDate")));
+			orderDetails.setCourierDate(Helper.dateFormater(orderMap.get("courierDate")));
 			
 			Map<String, Object> user = (Map<String, Object>) users.get((String) orderMap.get("userId"));
 			orderDetails.setUserData((String) user.get("encryptedData"));
@@ -336,6 +357,11 @@ public class FirebaseHomeService {
 			Map<String, Object> subTreatment = (Map<String, Object>) subTreatments.get((String) orderMap.get("subTreatmentId"));
 			orderDetails.setTreatmentName((String) subTreatment.get("name"));
 			
+			if (orderMap.get("feedbackId") != null) {
+				Map<String, Object> feedback = (Map<String, Object>) feedbacks.get(orderMap.get("feedbackId"));
+				orderDetails.setFeedbackComments((String) feedback.get("comments"));
+				orderDetails.setFeedbackRating((Long) feedback.get("ratings"));
+			}
 			listOrderDeatils.add(orderDetails);
 		}
 		listOrderDeatils.sort(Comparator.comparing(OrderDetails::getCreateDate).reversed());

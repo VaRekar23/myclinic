@@ -3,25 +3,33 @@ package com.clinic.myclinic.model;
 import java.util.Date;
 
 public class CustomerFeedback {
-	private String customerName;
+	private String feedbackId;
+	private String customerData;
 	private String comments;
 	private Long ratings;
 	private Date createDate;
 	private String beforePhoto;
 	private String afterPhoto;
-	private String treatmentCategory;
 	private String treatmentSubcategory;
 	
 	public CustomerFeedback() {
 		super();
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public String getFeedbackId() {
+		return feedbackId;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setFeedbackId(String feedbackId) {
+		this.feedbackId = feedbackId;
+	}
+
+	public String getCustomerData() {
+		return customerData;
+	}
+
+	public void setCustomerData(String customerData) {
+		this.customerData = customerData;
 	}
 
 	public String getComments() {
@@ -62,14 +70,6 @@ public class CustomerFeedback {
 
 	public void setAfterPhoto(String afterPhoto) {
 		this.afterPhoto = afterPhoto;
-	}
-
-	public String getTreatmentCategory() {
-		return treatmentCategory;
-	}
-
-	public void setTreatmentCategory(String treatmentCategory) {
-		this.treatmentCategory = treatmentCategory;
 	}
 
 	public String getTreatmentSubcategory() {

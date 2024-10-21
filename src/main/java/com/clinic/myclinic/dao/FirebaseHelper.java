@@ -1,5 +1,7 @@
 package com.clinic.myclinic.dao;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +10,10 @@ import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.common.Helper;
+import com.clinic.myclinic.model.MedicineWithAmount;
+import com.clinic.myclinic.model.OrderDetails;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.CollectionReference;
@@ -139,5 +144,54 @@ public class FirebaseHelper {
 			return (Map<String, Object>) document.get(userId);
 		}
 		return new HashMap<String, Object>();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void updateOrders(OrderBeans orderDetails) throws InterruptedException, ExecutionException {
+		try {
+		DocumentSnapshot document = firestore.collection("test-data").document("orders").get().get();
+		if (document.exists()) {
+			Map<String, Object> orders = (Map<String, Object>) document.get(orderDetails.getOrderId());
+			if (orders != null) {
+				orders.put("status", orderDetails.getStatus());
+				orders.put("doctorComments", orderDetails.getDoctorComments());
+				orders.put("items", orderDetails.getItems());
+				orders.put("paymentId", orderDetails.getPaymentId());
+				orders.put("prescriptionDocPath", orderDetails.getPrescriptionDocPath());
+				orders.put("totalAmount", orderDetails.getTotalAmount());
+				orders.put("trackingId", orderDetails.getTrackingId());
+				orders.put("feedbackId", orderDetails.getFeedbackId());
+				
+				if (Helper.removeMilliseconds(orderDetails.getPaymentDate()).getTime()!=Helper.defaultDate().getTime()) {
+					orders.put("paymentDate", orderDetails.getPaymentDate());
+				}
+				if (Helper.removeMilliseconds(orderDetails.getCourierDate()).getTime()!=Helper.defaultDate().getTime()) {
+					orders.put("courierDate", orderDetails.getCourierDate());
+				}
+				ApiFuture<WriteResult> writeResult = firestore.collection("test-data")
+						.document("orders")
+						.update(orderDetails.getOrderId(), orders);
+			}
+		}
+		} catch (Exception e) {
+			System.out.println("Error: "+e.getMessage());
+		}
+	}
+	
+	private Map<String, Object> removeNullFields(Map<String, Object> map) {
+	    map.entrySet().removeIf(entry -> entry.getValue() == null);
+	    return map;
+	}
+	
+	private List<Map<String, Object>> convertItemsToFirestoreCompatible(List<MedicineWithAmount> items) {
+	    List<Map<String, Object>> firestoreItems = new ArrayList();
+	    for (MedicineWithAmount item : items) {
+	        Map<String, Object> itemMap = new HashMap<>();
+	        itemMap.put("medicineName", item.getItem());
+	        itemMap.put("amount", item.getAmount());
+	        // Add any other necessary fields from MedicineWithAmount
+	        firestoreItems.add(itemMap);
+	    }
+	    return firestoreItems;
 	}
 }

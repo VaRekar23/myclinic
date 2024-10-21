@@ -11,6 +11,16 @@ public class OrderDetails {
 	private String additionalInfo;
 	private String status;
 	private Date createDate;
+	private String doctorComments;
+	private List<MedicineWithAmount> items;
+	private int totalAmount;
+	private String prescriptionDocPath;
+	private String paymentId;
+	private Date paymentDate;
+	private String trackingId;
+	private Date courierDate;
+	private String feedbackComments;
+	private Long feedbackRating;
 	
 	public OrderDetails() {
 		super();
@@ -58,5 +68,85 @@ public class OrderDetails {
 	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+
+	public String getDoctorComments() {
+		return doctorComments;
+	}
+
+	public void setDoctorComments(String doctorComments) {
+		this.doctorComments = doctorComments;
+	}
+
+	public List<MedicineWithAmount> getItems() {
+		return items;
+	}
+
+	public void setItems(List<MedicineWithAmount> items) {
+		this.items = items;
+	}
+
+	public int getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(int totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public String getPrescriptionDocPath() {
+		return prescriptionDocPath;
+	}
+
+	public void setPrescriptionDocPath(String prescriptionDocPath) {
+		this.prescriptionDocPath = prescriptionDocPath;
+	}
+
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
+
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public String getTrackingId() {
+		return trackingId;
+	}
+
+	public void setTrackingId(String trackingId) {
+		this.trackingId = trackingId;
+	}
+
+	public Date getCourierDate() {
+		return courierDate;
+	}
+
+	public void setCourierDate(Date courierDate) {
+		this.courierDate = courierDate;
+	}
+
+	public String getFeedbackComments() {
+		return feedbackComments;
+	}
+
+	public void setFeedbackComments(String feedbackComments) {
+		this.feedbackComments = feedbackComments;
+	}
+
+	public Long getFeedbackRating() {
+		return feedbackRating;
+	}
+
+	public void setFeedbackRating(Long feedbackRating) {
+		this.feedbackRating = feedbackRating;
 	}
 }

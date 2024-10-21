@@ -1,5 +1,6 @@
 package com.clinic.myclinic.common;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -19,6 +20,23 @@ public class Helper {
 			return calendar.getTime();
 		}
 	}
+	
+	public static Date defaultDate() {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            Date defaultDate = sdf.parse("Wed Jan 01 00:00:00 IST 1800");
+			return removeMilliseconds(defaultDate);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	public static Date removeMilliseconds(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.MILLISECOND, 0); // Set milliseconds to 0
+        return cal.getTime();
+    }
 	
 	public static boolean isNullOrEmpty(Collection<?> collection) {
 		return collection==null || collection.isEmpty();
