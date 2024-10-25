@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.clinic.myclinic.bean.CustomerFeedbackBeans;
 import com.clinic.myclinic.bean.OptionBeans;
 import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.bean.QuestionBeans;
@@ -24,11 +25,13 @@ import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.common.OrderStatus;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
-import com.clinic.myclinic.model.CustomerFeedback;
+import com.clinic.myclinic.model.CustomerFeedbackRequest;
+import com.clinic.myclinic.model.CustomerFeedbackResponse;
 import com.clinic.myclinic.model.MedicineWithAmount;
-import com.clinic.myclinic.model.OrderDetails;
+import com.clinic.myclinic.model.OrdersResponse;
+import com.clinic.myclinic.model.OrdersUpdateRequest;
 import com.clinic.myclinic.model.OrderQuestion;
-import com.clinic.myclinic.model.Orders;
+import com.clinic.myclinic.model.OrdersInsertRequest;
 import com.clinic.myclinic.model.OverallFeedback;
 import com.clinic.myclinic.model.RecentlyUsedTreatment;
 import com.clinic.myclinic.model.TreatmentCategory;
@@ -52,9 +55,9 @@ public class FirebaseHomeService {
 		
 		homeDetails.put("treatments", getTreatments());
 		
-		List<CustomerFeedback> feedbackList = feedbackBuilder(firebaseHomeDAO.getFeedback());
+		List<CustomerFeedbackResponse> feedbackList = feedbackBuilder(firebaseHomeDAO.getFeedback());
 		int totalFeedback = feedbackList.size();
-		double averageRating = feedbackList.stream().mapToLong(CustomerFeedback::getRatings).average().orElse(0);
+		double averageRating = feedbackList.stream().mapToLong(CustomerFeedbackResponse::getRatings).average().orElse(0);
 		homeDetails.put("feedbacks", feedbackList.stream().limit(5).toList());
 		
 		OverallFeedback overallFeedback = new OverallFeedback();
@@ -174,7 +177,7 @@ public class FirebaseHomeService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void storeOrder(Orders order) throws InterruptedException, ExecutionException {
+	public void storeOrder(OrdersInsertRequest order) throws InterruptedException, ExecutionException {
 		String uniqueId = UUID.randomUUID().toString();
 		
 		OrderBeans orderBean = new OrderBeans();
@@ -223,11 +226,29 @@ public class FirebaseHomeService {
 		
 	}
 	
-	public void updateOrder(OrderBeans orderDetails) throws InterruptedException, ExecutionException {
+	public void updateOrder(OrdersUpdateRequest orderDetails) throws InterruptedException, ExecutionException {
 		firebaseHomeDAO.updateOrders(orderDetails);
 	}
 	
-	public List<OrderDetails> getOrders(String userId) throws InterruptedException, ExecutionException {
+	public void storeFeedback(CustomerFeedbackRequest feedback) throws InterruptedException, ExecutionException { 
+		String uniqueId = UUID.randomUUID().toString();
+		OrdersUpdateRequest order = firebaseHomeDAO.getOrderById(feedback.getOrderId());
+		
+		CustomerFeedbackBeans feedbackBeans = new CustomerFeedbackBeans();
+		feedbackBeans.setFeedbackId(uniqueId);
+		feedbackBeans.setCustomerId(feedback.getUserId());
+		feedbackBeans.setComments(feedback.getComments());
+		feedbackBeans.setRatings(feedback.getRating());
+		feedbackBeans.setCreateDate(new Date());
+		feedbackBeans.setTreatmentId(order.getSubTreatmentId());
+		firebaseHomeDAO.storeDynamicData(feedbackBeans, "feedback", uniqueId);
+		
+		order.setStatus("C");
+		order.setFeedbackId(uniqueId);
+		firebaseHomeDAO.updateOrders(order);
+	}
+		
+	public List<OrdersResponse> getOrders(String userId) throws InterruptedException, ExecutionException {
 		Map<String, Object> orderDetails = firebaseHomeDAO.getOrders();
 		Map<String, Object> userData = firebaseHomeDAO.getAllUserData();
 		Map<String, Object> treatment = firebaseHomeDAO.getTreatments();
@@ -299,15 +320,15 @@ public class FirebaseHomeService {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<CustomerFeedback> feedbackBuilder(Map<String, Object> firebaseOutput) throws ExecutionException, InterruptedException {
-		List<CustomerFeedback> feedbackList = new ArrayList<CustomerFeedback>();
+	private List<CustomerFeedbackResponse> feedbackBuilder(Map<String, Object> firebaseOutput) throws ExecutionException, InterruptedException {
+		List<CustomerFeedbackResponse> feedbackList = new ArrayList<CustomerFeedbackResponse>();
 		for (Map.Entry<String, Object> entry: firebaseOutput.entrySet()) {
 			Map<String, Object> feedbackData = (Map<String, Object>) entry.getValue();
 			
-			CustomerFeedback feedback = new CustomerFeedback();
+			CustomerFeedbackResponse feedback = new CustomerFeedbackResponse();
 			feedback.setFeedbackId((String) feedbackData.get("feedbackId"));
-			feedback.setAfterPhoto((String) feedbackData.get("after-photo"));
-			feedback.setBeforePhoto((String) feedbackData.get("before-photo"));
+			feedback.setAfterPhoto((String) feedbackData.get("afterPhoto"));
+			feedback.setBeforePhoto((String) feedbackData.get("beforePhoto"));
 			feedback.setComments((String) feedbackData.get("comments"));
 			feedback.setCreateDate(Helper.dateFormater(feedbackData.get("date")));
 			feedback.setRatings((Long) feedbackData.get("ratings"));
@@ -315,7 +336,7 @@ public class FirebaseHomeService {
 			String userId = (String) feedbackData.get("customerId");
 			feedback.setCustomerData((String) firebaseHomeDAO.getUserData(userId).get("encryptedData"));
 			
-			String treatmentId = (String) feedbackData.get("treatment-id");
+			String treatmentId = (String) feedbackData.get("treatmentId");
 			TreatmentFeedback treatmentFeedback = firebaseHomeDAO.getFeedbackTreatment(treatmentId);
 			
 			feedback.setTreatmentSubcategory(treatmentFeedback.getSubcategory());
@@ -326,13 +347,13 @@ public class FirebaseHomeService {
 		return feedbackList;
 	}
 	
-	private List<OrderDetails> orderDetailsBuilder(Map<String, Object> orders, Map<String, Object> users, Map<String, Object> treatments, Map<String, Object> feedbacks) {
-		List<OrderDetails> listOrderDeatils = new ArrayList<OrderDetails>();
+	private List<OrdersResponse> orderDetailsBuilder(Map<String, Object> orders, Map<String, Object> users, Map<String, Object> treatments, Map<String, Object> feedbacks) {
+		List<OrdersResponse> listOrderDeatils = new ArrayList<OrdersResponse>();
 		
 		for (Map.Entry<String, Object> orderEntry : orders.entrySet()) {
 			Map<String, Object> orderMap = (Map<String, Object>) orderEntry.getValue();
 			
-			OrderDetails orderDetails = new OrderDetails();
+			OrdersResponse orderDetails = new OrdersResponse();
 			orderDetails.setOrderId((String)orderMap.get("orderId"));
 			orderDetails.setAdditionalInfo((String) orderMap.get("additionalInfo"));
 			orderDetails.setStatus(OrderStatus.getDescriptionByCode((String) orderMap.get("status")));
@@ -364,7 +385,7 @@ public class FirebaseHomeService {
 			}
 			listOrderDeatils.add(orderDetails);
 		}
-		listOrderDeatils.sort(Comparator.comparing(OrderDetails::getCreateDate).reversed());
+		listOrderDeatils.sort(Comparator.comparing(OrdersResponse::getCreateDate).reversed());
 		return listOrderDeatils;
 	}
 }

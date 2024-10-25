@@ -2,18 +2,18 @@ package com.clinic.myclinic.model;
 
 import java.util.List;
 
-public class Orders {
+public class OrdersInsertRequest {
 	private String userId;
 	private String treatmentId;
 	private String subTreatmentId;
 	private String additionalInfo;
 	private List<OrderQuestion> questions;
 	
-	public Orders() {
+	public OrdersInsertRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Orders(String userId, String treatmentId, String subTreatmentId, String additionalInfo,
+	public OrdersInsertRequest(String userId, String treatmentId, String subTreatmentId, String additionalInfo,
 			List<OrderQuestion> questions) {
 		super();
 		this.userId = userId;

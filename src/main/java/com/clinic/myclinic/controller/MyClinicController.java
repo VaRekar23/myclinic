@@ -18,8 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clinic.myclinic.bean.AboutUiBeans;
 import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.bean.OrderBeans;
-import com.clinic.myclinic.model.OrderDetails;
-import com.clinic.myclinic.model.Orders;
+import com.clinic.myclinic.model.OrdersResponse;
+import com.clinic.myclinic.model.OrdersUpdateRequest;
+import com.clinic.myclinic.model.CustomerFeedbackRequest;
+import com.clinic.myclinic.model.OrdersInsertRequest;
 import com.clinic.myclinic.model.TreatmentCategory;
 import com.clinic.myclinic.model.TreatmentQuestions;
 import com.clinic.myclinic.model.UserData;
@@ -168,7 +170,7 @@ public class MyClinicController {
 	}
 	
 	@RequestMapping(value="api/controller/store-order", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> storeOrder(@RequestBody Orders orders) {
+	public ResponseEntity<String> storeOrder(@RequestBody OrdersInsertRequest orders) {
 		try {
 			firebaseHomeService.storeOrder(orders);
 			return new ResponseEntity<String>("Order Added", HttpStatus.OK);
@@ -179,9 +181,9 @@ public class MyClinicController {
 	}
 	
 	@RequestMapping(value="api/controller/get-orders", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<OrderDetails>> getOrders(@RequestParam String userId) {
+	public ResponseEntity<List<OrdersResponse>> getOrders(@RequestParam String userId) {
 		try {
-			List<OrderDetails> orderDetails = firebaseHomeService.getOrders(userId);
+			List<OrdersResponse> orderDetails = firebaseHomeService.getOrders(userId);
 			return new ResponseEntity<>(orderDetails, HttpStatus.OK);
 		} catch(ExecutionException | InterruptedException e) {
 			System.out.println("Get-Orders Error: "+e.getMessage());
@@ -190,9 +192,20 @@ public class MyClinicController {
 	}
 	
 	@RequestMapping(value="api/controller/update-order", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> updateOrder(@RequestBody OrderBeans orderDetails) {
+	public ResponseEntity<String> updateOrder(@RequestBody OrdersUpdateRequest orderDetails) {
 		try {
 			firebaseHomeService.updateOrder(orderDetails);
+			return new ResponseEntity<String>("Update Added", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-Order Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-feedback", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeFeedback(@RequestBody CustomerFeedbackRequest feedback) {
+		try {
+			firebaseHomeService.storeFeedback(feedback);
 			return new ResponseEntity<String>("Update Added", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			System.out.println("Store-Order Error: "+e.getMessage());

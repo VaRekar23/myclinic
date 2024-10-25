@@ -2,7 +2,7 @@ package com.clinic.myclinic.model;
 
 import java.util.Date;
 
-public class CustomerFeedback {
+public class CustomerFeedbackResponse {
 	private String feedbackId;
 	private String customerData;
 	private String comments;
@@ -12,7 +12,7 @@ public class CustomerFeedback {
 	private String afterPhoto;
 	private String treatmentSubcategory;
 	
-	public CustomerFeedback() {
+	public CustomerFeedbackResponse() {
 		super();
 	}
 

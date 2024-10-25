@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.common.Helper;
-import com.clinic.myclinic.model.OrderDetails;
+import com.clinic.myclinic.model.OrdersResponse;
+import com.clinic.myclinic.model.OrdersUpdateRequest;
 import com.clinic.myclinic.model.TreatmentFeedback;
 import com.google.cloud.Timestamp;
 
@@ -83,7 +84,11 @@ public class FirebaseHomeDAO {
 		return firebaseHelper.getData("test-data", "orders");
 	}
 	
-	public void updateOrders(OrderBeans orderDetails) throws InterruptedException, ExecutionException {
+	public void updateOrders(OrdersUpdateRequest orderDetails) throws InterruptedException, ExecutionException {
 		firebaseHelper.updateOrders(orderDetails);
+	}
+	
+	public OrdersUpdateRequest getOrderById(String orderId) throws InterruptedException, ExecutionException {
+		return firebaseHelper.getOrderById(orderId);
 	}
 }

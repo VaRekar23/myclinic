@@ -3,14 +3,16 @@ package com.clinic.myclinic.model;
 import java.util.Date;
 import java.util.List;
 
-public class OrderDetails {
+public class OrdersUpdateRequest {
 	private String orderId;
-	private String treatmentName;
-	private String userData;
-	private List<OrderQuestion> questions;
+	private String userId;
+	private String parentId;
+	private String treatmentId;
+	private String subTreatmentId;
 	private String additionalInfo;
 	private String status;
 	private Date createDate;
+	private List<OrderQuestion> questions;
 	private String doctorComments;
 	private List<MedicineWithAmount> items;
 	private int totalAmount;
@@ -19,53 +21,81 @@ public class OrderDetails {
 	private Date paymentDate;
 	private String trackingId;
 	private Date courierDate;
-	private String feedbackComments;
-	private Long feedbackRating;
-	
-	public OrderDetails() {
+	private String feedbackId;
+
+	public OrdersUpdateRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public String getOrderId() {
 		return orderId;
 	}
+
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
-	public String getTreatmentName() {
-		return treatmentName;
+
+	public String getUserId() {
+		return userId;
 	}
-	public void setTreatmentName(String treatmentName) {
-		this.treatmentName = treatmentName;
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-	public String getUserData() {
-		return userData;
+
+	public String getParentId() {
+		return parentId;
 	}
-	public void setUserData(String userData) {
-		this.userData = userData;
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
 	}
-	public List<OrderQuestion> getQuestions() {
-		return questions;
+
+	public String getTreatmentId() {
+		return treatmentId;
 	}
-	public void setQuestions(List<OrderQuestion> questions) {
-		this.questions = questions;
+
+	public void setTreatmentId(String treatmentId) {
+		this.treatmentId = treatmentId;
 	}
+
+	public String getSubTreatmentId() {
+		return subTreatmentId;
+	}
+
+	public void setSubTreatmentId(String subTreatmentId) {
+		this.subTreatmentId = subTreatmentId;
+	}
+
 	public String getAdditionalInfo() {
 		return additionalInfo;
 	}
+
 	public void setAdditionalInfo(String additionalInfo) {
 		this.additionalInfo = additionalInfo;
 	}
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public List<OrderQuestion> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<OrderQuestion> questions) {
+		this.questions = questions;
+	}
+
 	public Date getCreateDate() {
 		return createDate;
 	}
+
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
@@ -134,19 +164,11 @@ public class OrderDetails {
 		this.courierDate = courierDate;
 	}
 
-	public String getFeedbackComments() {
-		return feedbackComments;
+	public String getFeedbackId() {
+		return feedbackId;
 	}
 
-	public void setFeedbackComments(String feedbackComments) {
-		this.feedbackComments = feedbackComments;
-	}
-
-	public Long getFeedbackRating() {
-		return feedbackRating;
-	}
-
-	public void setFeedbackRating(Long feedbackRating) {
-		this.feedbackRating = feedbackRating;
+	public void setFeedbackId(String feedbackId) {
+		this.feedbackId = feedbackId;
 	}
 }
