@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.common.Helper;
+import com.clinic.myclinic.model.CommonCharge;
 import com.clinic.myclinic.model.OrdersResponse;
 import com.clinic.myclinic.model.OrdersUpdateRequest;
 import com.clinic.myclinic.model.TreatmentFeedback;
@@ -90,5 +91,9 @@ public class FirebaseHomeDAO {
 	
 	public OrdersUpdateRequest getOrderById(String orderId) throws InterruptedException, ExecutionException {
 		return firebaseHelper.getOrderById(orderId);
+	}
+	
+	public Map<String, Object> getCommonCharges() throws InterruptedException, ExecutionException {
+		return firebaseHelper.getData("test-data", "common_charge");
 	}
 }

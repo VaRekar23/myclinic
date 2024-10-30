@@ -20,6 +20,8 @@ import com.clinic.myclinic.bean.HomeUiBeans;
 import com.clinic.myclinic.bean.OrderBeans;
 import com.clinic.myclinic.model.OrdersResponse;
 import com.clinic.myclinic.model.OrdersUpdateRequest;
+import com.clinic.myclinic.model.AdminDashboard;
+import com.clinic.myclinic.model.CommonCharge;
 import com.clinic.myclinic.model.CustomerFeedbackRequest;
 import com.clinic.myclinic.model.OrdersInsertRequest;
 import com.clinic.myclinic.model.TreatmentCategory;
@@ -209,6 +211,39 @@ public class MyClinicController {
 			return new ResponseEntity<String>("Update Added", HttpStatus.OK);
 		} catch (ExecutionException | InterruptedException e) {
 			System.out.println("Store-Order Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-admindashboard", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<AdminDashboard> getAdminDashboard() {
+		try {
+			AdminDashboard adminDashboardDetails = firebaseHomeService.getAdminDashboard();
+			return new ResponseEntity<>(adminDashboardDetails, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-AdminDashboard Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/store-commoncharge", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> storeCommonCharge(@RequestBody CommonCharge commonCharge) {
+		try {
+			firebaseHomeService.storeCommonCharge(commonCharge);
+			return new ResponseEntity<String>("Common Charge Added", HttpStatus.OK);
+		} catch (ExecutionException | InterruptedException e) {
+			System.out.println("Store-Order Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@RequestMapping(value="api/controller/get-commoncharge", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<CommonCharge> getCommonCharge() {
+		try {
+			CommonCharge commonCharge = firebaseHomeService.getCommonCharge();
+			return new ResponseEntity<>(commonCharge, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-CommonCharge Error: "+e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

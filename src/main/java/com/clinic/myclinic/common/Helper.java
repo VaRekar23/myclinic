@@ -45,4 +45,9 @@ public class Helper {
 	public static boolean isNullOrEmpty(Map<?,?> map) {
 		return map==null || map.isEmpty();
 	}
+	
+	public static boolean isFutureDate(Date date) {
+		Date currentDate = new Date();
+		return date.after(currentDate);
+	}
 }

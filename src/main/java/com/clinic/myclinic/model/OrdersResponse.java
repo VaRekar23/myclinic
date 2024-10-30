@@ -13,7 +13,11 @@ public class OrdersResponse {
 	private Date createDate;
 	private String doctorComments;
 	private List<MedicineWithAmount> items;
-	private int totalAmount;
+	private boolean isDiscount;
+	private int discountPercentage;
+	private int consultationCharge;
+	private int deliveryCharge;
+	private String totalAmount;
 	private String prescriptionDocPath;
 	private String paymentId;
 	private Date paymentDate;
@@ -86,11 +90,11 @@ public class OrdersResponse {
 		this.items = items;
 	}
 
-	public int getTotalAmount() {
+	public String getTotalAmount() {
 		return totalAmount;
 	}
 
-	public void setTotalAmount(int totalAmount) {
+	public void setTotalAmount(String totalAmount) {
 		this.totalAmount = totalAmount;
 	}
 
@@ -148,5 +152,37 @@ public class OrdersResponse {
 
 	public void setFeedbackRating(Long feedbackRating) {
 		this.feedbackRating = feedbackRating;
+	}
+	
+	public boolean getIsDiscount() {
+		return isDiscount;
+	}
+
+	public void setIsDiscount(boolean isDiscount) {
+		this.isDiscount = isDiscount;
+	}
+
+	public int getDiscountPercentage() {
+		return discountPercentage;
+	}
+
+	public void setDiscountPercentage(int discountPercentage) {
+		this.discountPercentage = discountPercentage;
+	}
+
+	public int getConsultationCharge() {
+		return consultationCharge;
+	}
+
+	public void setConsultationCharge(int consultationCharge) {
+		this.consultationCharge = consultationCharge;
+	}
+
+	public int getDeliveryCharge() {
+		return deliveryCharge;
+	}
+
+	public void setDeliveryCharge(int deliveryCharge) {
+		this.deliveryCharge = deliveryCharge;
 	}
 }

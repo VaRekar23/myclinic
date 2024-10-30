@@ -162,6 +162,10 @@ public class FirebaseHelper {
 				orders.put("totalAmount", orderDetails.getTotalAmount());
 				orders.put("trackingId", orderDetails.getTrackingId());
 				orders.put("feedbackId", orderDetails.getFeedbackId());
+				orders.put("isDiscount", orderDetails.getIsDiscount());
+				orders.put("discountPercentage", orderDetails.getDiscountPercentage());
+				orders.put("consultationCharge", orderDetails.getConsultationCharge());
+				orders.put("deliveryCharge", orderDetails.getDeliveryCharge());
 				
 				if (Helper.removeMilliseconds(orderDetails.getPaymentDate()).getTime()!=Helper.defaultDate().getTime()) {
 					orders.put("paymentDate", orderDetails.getPaymentDate());
@@ -191,9 +195,15 @@ public class FirebaseHelper {
 				orderDetails.setPrescriptionDocPath((String) orderMap.get("prescriptionDocPath"));
 				orderDetails.setPaymentId((String) orderMap.get("paymentId"));
 				orderDetails.setTrackingId((String) orderMap.get("trackingId"));
+				orderDetails.setIsDiscount((Boolean) orderMap.get("isDiscount"));
 				
-				long totalAmount = (Long) orderMap.get("totalAmount");
-				orderDetails.setTotalAmount((int) totalAmount);
+				orderDetails.setTotalAmount((String) orderMap.get("totalAmount"));
+				long discountPercentage = (Long) orderMap.get("discountPercentage");
+				orderDetails.setDiscountPercentage((int) discountPercentage);
+				long consultationCharge = (Long) orderMap.get("consultationCharge");
+				orderDetails.setConsultationCharge((int) consultationCharge);
+				long deliveryCharge = (Long) orderMap.get("deliveryCharge");
+				orderDetails.setDeliveryCharge((int) deliveryCharge);
 				
 				orderDetails.setCreateDate(Helper.dateFormater(orderMap.get("createDate")));
 				orderDetails.setPaymentDate(Helper.dateFormater(orderMap.get("paymentDate")));

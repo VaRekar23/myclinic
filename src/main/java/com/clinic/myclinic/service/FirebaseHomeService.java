@@ -25,6 +25,8 @@ import com.clinic.myclinic.bean.UserBean;
 import com.clinic.myclinic.common.Helper;
 import com.clinic.myclinic.common.OrderStatus;
 import com.clinic.myclinic.dao.FirebaseHomeDAO;
+import com.clinic.myclinic.model.AdminDashboard;
+import com.clinic.myclinic.model.CommonCharge;
 import com.clinic.myclinic.model.CustomerFeedbackRequest;
 import com.clinic.myclinic.model.CustomerFeedbackResponse;
 import com.clinic.myclinic.model.MedicineWithAmount;
@@ -267,6 +269,53 @@ public class FirebaseHomeService {
 		}
 	}
 	
+	public AdminDashboard getAdminDashboard() throws InterruptedException, ExecutionException {
+		AdminDashboard adminDashboardDetails = new AdminDashboard();
+		Map<String, Object> orderDetails = firebaseHomeDAO.getOrders();
+		adminDashboardDetails.setTotalOrderCount(orderDetails.size());
+		adminDashboardDetails.setTotalUserCount(firebaseHomeDAO.getAllUserData().size());
+		
+		AdminDashboard adminDetailsWithOrders = adminDashboardBuilderOrders(orderDetails, adminDashboardDetails);
+		
+		CommonCharge commonCharge = getCommonCharge();
+		adminDetailsWithOrders.setConsultationCharge(commonCharge.getConsultationCharge());
+		adminDetailsWithOrders.setIsDiscount(commonCharge.getIsDiscount());
+		adminDetailsWithOrders.setDiscountTillDate(commonCharge.getDiscountTillDate());
+		adminDetailsWithOrders.setDiscountPercentage(commonCharge.getDiscountPercentage());
+		adminDetailsWithOrders.setDeliveryCharge(commonCharge.getDeliveryCharge());
+		
+		return adminDetailsWithOrders;
+	}
+	
+	public void storeCommonCharge(CommonCharge commonCharge) throws InterruptedException, ExecutionException {
+		firebaseHomeDAO.storeDynamicData(commonCharge.getConsultationCharge(), "common_charge", "consultationCharge");
+		firebaseHomeDAO.storeDynamicData(commonCharge.getIsDiscount(), "common_charge", "isDiscount");
+		firebaseHomeDAO.storeDynamicData(commonCharge.getDiscountTillDate(), "common_charge", "discountTillDate");
+		firebaseHomeDAO.storeDynamicData(commonCharge.getDiscountPercentage(), "common_charge", "discountPercentage");
+		firebaseHomeDAO.storeDynamicData(commonCharge.getDeliveryCharge(), "common_charge", "deliveryCharge");
+	}
+	
+	public CommonCharge getCommonCharge() throws InterruptedException, ExecutionException {
+		CommonCharge commonCharge = new CommonCharge();
+		Map<String, Object> commonChargeMap = firebaseHomeDAO.getCommonCharges();
+		
+		Date discountTillDate = Helper.dateFormater(commonChargeMap.get("discountTillDate"));
+		
+		commonCharge.setIsDiscount((Boolean)commonChargeMap.get("isDiscount") ? Helper.isFutureDate(discountTillDate) : false);
+		commonCharge.setDiscountTillDate(discountTillDate);
+		
+		long discountPercentage = (Long) commonChargeMap.get("discountPercentage");
+		commonCharge.setDiscountPercentage((int)discountPercentage);
+		
+		long consultationCharge = (Long) commonChargeMap.get("consultationCharge");
+		commonCharge.setConsultationCharge((int)consultationCharge);
+		
+		long deliveryCharge = (Long) commonChargeMap.get("deliveryCharge");
+		commonCharge.setDeliveryCharge((int) deliveryCharge);
+		
+		return commonCharge;
+	}
+	
 	@SuppressWarnings("unchecked")
 	private List<RecentlyUsedTreatment> frequentTreatmentBuilder(Map<String, Object> firebaseOutput) {
 		List<RecentlyUsedTreatment> recentlyUsedTreatmentsList = new ArrayList<RecentlyUsedTreatment>();
@@ -363,9 +412,16 @@ public class FirebaseHomeService {
 			orderDetails.setPrescriptionDocPath((String) orderMap.get("prescriptionDocPath"));
 			orderDetails.setPaymentId((String) orderMap.get("paymentId"));
 			orderDetails.setTrackingId((String) orderMap.get("trackingId"));
+			orderDetails.setIsDiscount((Boolean) orderMap.get("isDiscount"));
 			
-			long totalAmount = (Long) orderMap.get("totalAmount");
-			orderDetails.setTotalAmount((int) totalAmount);
+			long discountPercentage = (Long) orderMap.get("discountPercentage");
+			orderDetails.setDiscountPercentage((int) discountPercentage);
+			long consultationCharge = (Long) orderMap.get("consultationCharge");
+			orderDetails.setConsultationCharge((int) consultationCharge);
+			long deliveryCharge = (Long) orderMap.get("deliveryCharge");
+			orderDetails.setDeliveryCharge((int) deliveryCharge);
+			
+			orderDetails.setTotalAmount((String) orderMap.get("totalAmount"));
 			
 			orderDetails.setCreateDate(Helper.dateFormater(orderMap.get("createDate")));
 			orderDetails.setPaymentDate(Helper.dateFormater(orderMap.get("paymentDate")));
@@ -387,5 +443,26 @@ public class FirebaseHomeService {
 		}
 		listOrderDeatils.sort(Comparator.comparing(OrdersResponse::getCreateDate).reversed());
 		return listOrderDeatils;
+	}
+	
+	private AdminDashboard adminDashboardBuilderOrders(Map<String, Object> orders, AdminDashboard adminDetails) {
+		Map<String, Integer> countDetails = new HashMap<String, Integer>();
+		
+		for (Map.Entry<String, Object> orderEntry : orders.entrySet()) {
+			Map<String, Object> orderMap = (Map<String, Object>) orderEntry.getValue();
+			
+			String status = (String) orderMap.get("status");
+			countDetails.put(status, countDetails.getOrDefault(status, 0)+1);
+		}
+		
+		adminDetails.setCountOrderC(countDetails.getOrDefault("C", 0));
+		adminDetails.setCountOrderD(countDetails.getOrDefault("D", 0));
+		adminDetails.setCountOrderFP(countDetails.getOrDefault("FP", 0));
+		adminDetails.setCountOrderMC(countDetails.getOrDefault("MC", 0));
+		adminDetails.setCountOrderPD(countDetails.getOrDefault("PD", 0));
+		adminDetails.setCountOrderPP(countDetails.getOrDefault("PP", 0));
+		adminDetails.setCountOrderPRD(countDetails.getOrDefault("PRD", 0));
+		
+		return adminDetails;
 	}
 }
