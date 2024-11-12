@@ -461,7 +461,7 @@ public class FirebaseHomeService {
 		adminDetails.setCountOrderMC(countDetails.getOrDefault("MC", 0));
 		adminDetails.setCountOrderPD(countDetails.getOrDefault("PD", 0));
 		adminDetails.setCountOrderPP(countDetails.getOrDefault("PP", 0));
-		adminDetails.setCountOrderPRD(countDetails.getOrDefault("PRD", 0));
+		adminDetails.setCountOrderPRD(countDetails.getOrDefault("PDR", 0));
 		
 		return adminDetails;
 	}
