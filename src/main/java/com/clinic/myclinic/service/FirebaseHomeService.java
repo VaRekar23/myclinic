@@ -95,7 +95,7 @@ public class FirebaseHomeService {
 				subTreatment.setId(treatmentSubcategory.getId());
 				subTreatment.setCategoryId(treatmentSubcategory.getCategoryId());
 				subTreatment.setName(treatmentSubcategory.getName());
-				subTreatment.setQuestion_id(treatmentSubcategory.getQuestionId());
+				subTreatment.setQuestion_id(treatmentSubcategory.getQuestionId()==null ? "" : treatmentSubcategory.getQuestionId());
 				subTreatmentBeans.put(treatmentSubcategory.getId(), subTreatment);
 				
 				RecentlyUsedTreatmentBeans recentlyUsedBeans = new RecentlyUsedTreatmentBeans();
