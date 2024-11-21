@@ -23,6 +23,7 @@ public class FirebaseConfig {
 		if (FirebaseApp.getApps().isEmpty()) {
 			FirebaseOptions options = FirebaseOptions.builder()
 					.setCredentials(GoogleCredentials.fromStream(new ByteArrayInputStream(firebaseServiceAccount.getBytes())))
+					.setStorageBucket("my-homeopathy-clinic.firebasestorage.app")
 					.build();
 		
 			return FirebaseApp.initializeApp(options);
