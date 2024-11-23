@@ -1,13 +1,15 @@
 package com.clinic.myclinic.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class CommonCharge {
 	private boolean isDiscount;
 	private Date discountTillDate;
 	private int discountPercentage;
 	private int consultationCharge;
-	private int deliveryCharge;
+	private int reconsultationCharge;
+	private List<DeliveryCharges> deliveryCharge;
 		
 	public CommonCharge() {
 		super();
@@ -38,10 +40,16 @@ public class CommonCharge {
 	public void setConsultationCharge(int consultationCharge) {
 		this.consultationCharge = consultationCharge;
 	}
-	public int getDeliveryCharge() {
+	public int getReconsultationCharge() {
+		return reconsultationCharge;
+	}
+	public void setReconsultationCharge(int reconsultationCharge) {
+		this.reconsultationCharge = reconsultationCharge;
+	}
+	public List<DeliveryCharges> getDeliveryCharge() {
 		return deliveryCharge;
 	}
-	public void setDeliveryCharge(int deliveryCharge) {
+	public void setDeliveryCharge(List<DeliveryCharges> deliveryCharge) {
 		this.deliveryCharge = deliveryCharge;
 	}
 }

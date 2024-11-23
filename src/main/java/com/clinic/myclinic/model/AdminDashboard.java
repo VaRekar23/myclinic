@@ -1,6 +1,7 @@
 package com.clinic.myclinic.model;
 
 import java.util.Date;
+import java.util.List;
 
 public class AdminDashboard {
 	private int totalUserCount;
@@ -24,7 +25,8 @@ public class AdminDashboard {
 	private Date discountTillDate;
 	private int discountPercentage;
 	private int consultationCharge;
-	private int deliveryCharge; //Need to update
+	private int reconsultationCharge;
+	private List<DeliveryCharges> deliveryCharge; //Need to update
 	
 	public int getTotalOrderCount() {
 		return totalOrderCount;
@@ -110,10 +112,16 @@ public class AdminDashboard {
 	public void setConsultationCharge(int consultationCharge) {
 		this.consultationCharge = consultationCharge;
 	}
-	public int getDeliveryCharge() {
+	public int getReconsultationCharge() {
+		return reconsultationCharge;
+	}
+	public void setReconsultationCharge(int reconsultationCharge) {
+		this.reconsultationCharge = reconsultationCharge;
+	}
+	public List<DeliveryCharges> getDeliveryCharge() {
 		return deliveryCharge;
 	}
-	public void setDeliveryCharge(int deliveryCharge) {
+	public void setDeliveryCharge(List<DeliveryCharges> deliveryCharge) {
 		this.deliveryCharge = deliveryCharge;
 	}
 	public int getTotalUserCount() {

@@ -29,6 +29,7 @@ import com.clinic.myclinic.model.AdminDashboard;
 import com.clinic.myclinic.model.CommonCharge;
 import com.clinic.myclinic.model.CustomerFeedbackRequest;
 import com.clinic.myclinic.model.CustomerFeedbackResponse;
+import com.clinic.myclinic.model.DeliveryCharges;
 import com.clinic.myclinic.model.MedicineWithAmount;
 import com.clinic.myclinic.model.OrdersResponse;
 import com.clinic.myclinic.model.OrdersUpdateRequest;
@@ -279,6 +280,7 @@ public class FirebaseHomeService {
 		
 		CommonCharge commonCharge = getCommonCharge();
 		adminDetailsWithOrders.setConsultationCharge(commonCharge.getConsultationCharge());
+		adminDetailsWithOrders.setReconsultationCharge(commonCharge.getReconsultationCharge());
 		adminDetailsWithOrders.setIsDiscount(commonCharge.getIsDiscount());
 		adminDetailsWithOrders.setDiscountTillDate(commonCharge.getDiscountTillDate());
 		adminDetailsWithOrders.setDiscountPercentage(commonCharge.getDiscountPercentage());
@@ -289,6 +291,7 @@ public class FirebaseHomeService {
 	
 	public void storeCommonCharge(CommonCharge commonCharge) throws InterruptedException, ExecutionException {
 		firebaseHomeDAO.storeDynamicData(commonCharge.getConsultationCharge(), "common_charge", "consultationCharge");
+		firebaseHomeDAO.storeDynamicData(commonCharge.getReconsultationCharge(), "common_charge", "reconsultationCharge");
 		firebaseHomeDAO.storeDynamicData(commonCharge.getIsDiscount(), "common_charge", "isDiscount");
 		firebaseHomeDAO.storeDynamicData(commonCharge.getDiscountTillDate(), "common_charge", "discountTillDate");
 		firebaseHomeDAO.storeDynamicData(commonCharge.getDiscountPercentage(), "common_charge", "discountPercentage");
@@ -310,8 +313,23 @@ public class FirebaseHomeService {
 		long consultationCharge = (Long) commonChargeMap.get("consultationCharge");
 		commonCharge.setConsultationCharge((int)consultationCharge);
 		
-		long deliveryCharge = (Long) commonChargeMap.get("deliveryCharge");
-		commonCharge.setDeliveryCharge((int) deliveryCharge);
+		long reconsultationCharge = (Long) commonChargeMap.get("reconsultationCharge");
+		commonCharge.setReconsultationCharge((int)reconsultationCharge);
+		
+		List<Map<String, Object>> deliveryObject = (List<Map<String, Object>>) commonChargeMap.get("deliveryCharge");
+		List<DeliveryCharges> listCharges = new ArrayList<DeliveryCharges>();
+		if (!Helper.isNullOrEmpty(deliveryObject)) {
+			for (Map<String, Object> entry : deliveryObject) {
+				long charge = (Long) entry.get("charges");
+			
+				DeliveryCharges deliveryCharge = new DeliveryCharges(
+						(String) entry.get("postalCodePrefix"),
+						(String) entry.get("region"),
+						(int) charge);
+				listCharges.add(deliveryCharge);
+			}
+		}
+		commonCharge.setDeliveryCharge(listCharges);
 		
 		return commonCharge;
 	}
