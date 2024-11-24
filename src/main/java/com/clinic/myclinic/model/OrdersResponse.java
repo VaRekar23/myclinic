@@ -25,6 +25,7 @@ public class OrdersResponse {
 	private Date courierDate;
 	private String feedbackComments;
 	private Long feedbackRating;
+	private String followUpOrderId;
 	
 	public OrdersResponse() {
 		super();
@@ -184,5 +185,13 @@ public class OrdersResponse {
 
 	public void setDeliveryCharge(int deliveryCharge) {
 		this.deliveryCharge = deliveryCharge;
+	}
+	
+	public String getFollowUpOrderId() {
+		return followUpOrderId;
+	}
+	
+	public void setFollowUpOrderId(String followUpOrderId) {
+		this.followUpOrderId = followUpOrderId;
 	}
 }

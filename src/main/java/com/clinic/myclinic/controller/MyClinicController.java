@@ -193,6 +193,17 @@ public class MyClinicController {
 		}
 	}
 	
+	@RequestMapping(value="api/controller/get-ordersbyId", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Map<String, Object>> getOrdersByUser(@RequestParam String userId) {
+		try {
+			Map<String, Object> orderDetails = firebaseHomeService.getOrdersByUser(userId);
+			return new ResponseEntity<>(orderDetails, HttpStatus.OK);
+		} catch(ExecutionException | InterruptedException e) {
+			System.out.println("Get-Orders Error: "+e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	@RequestMapping(value="api/controller/update-order", method=RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> updateOrder(@RequestBody OrdersUpdateRequest orderDetails) {
 		try {

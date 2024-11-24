@@ -26,6 +26,7 @@ public class OrdersUpdateRequest {
 	private String trackingId;
 	private Date courierDate;
 	private String feedbackId;
+	private String followUpOrderId;
 
 	public OrdersUpdateRequest() {
 		super();
@@ -206,5 +207,13 @@ public class OrdersUpdateRequest {
 
 	public void setDeliveryCharge(int deliveryCharge) {
 		this.deliveryCharge = deliveryCharge;
+	}
+	
+	public String getFollowUpOrderId() {
+		return followUpOrderId;
+	}
+	
+	public void setFollowUpOrderId(String followUpOrderId) {
+		this.followUpOrderId = followUpOrderId;
 	}
 }

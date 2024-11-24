@@ -29,6 +29,7 @@ public class OrderBeans {
 	private String trackingId;
 	private Date courierDate;
 	private String feedbackId;
+	private String followUpOrderId;
 
 	public OrderBeans() {
 		super();
@@ -211,4 +212,11 @@ public class OrderBeans {
 		this.deliveryCharge = deliveryCharge;
 	}
 	
+	public String getFollowUpOrderId() {
+		return followUpOrderId;
+	}
+	
+	public void setFollowUpOrderId(String followUpOrderId) {
+		this.followUpOrderId = followUpOrderId;
+	}
 }

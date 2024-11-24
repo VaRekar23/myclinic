@@ -8,19 +8,21 @@ public class OrdersInsertRequest {
 	private String subTreatmentId;
 	private String additionalInfo;
 	private List<OrderQuestion> questions;
+	private String followUpOrderId;
 	
 	public OrdersInsertRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public OrdersInsertRequest(String userId, String treatmentId, String subTreatmentId, String additionalInfo,
-			List<OrderQuestion> questions) {
+			List<OrderQuestion> questions, String followUpOrderId) {
 		super();
 		this.userId = userId;
 		this.treatmentId = treatmentId;
 		this.subTreatmentId = subTreatmentId;
 		this.additionalInfo = additionalInfo;
 		this.questions = questions;
+		this.followUpOrderId = followUpOrderId;
 	}
 	
 	public String getUserId() {
@@ -52,5 +54,11 @@ public class OrdersInsertRequest {
 	}
 	public void setQuestions(List<OrderQuestion> questions) {
 		this.questions = questions;
+	}
+	public String getFollowUpOrderId() {
+		return followUpOrderId;
+	}
+	public void setFollowUpOrderId(String followUpOrderId) {
+		this.followUpOrderId = followUpOrderId;
 	}
 }

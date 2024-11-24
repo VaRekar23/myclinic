@@ -192,6 +192,7 @@ public class FirebaseHomeService {
 		orderBean.setQuestions(order.getQuestions());
 		orderBean.setStatus("PDR");
 		orderBean.setCreateDate(new Date());
+		orderBean.setFollowUpOrderId(order.getFollowUpOrderId());
 		
 		orderBean.setItems(new ArrayList<MedicineWithAmount>());
 		
@@ -268,6 +269,16 @@ public class FirebaseHomeService {
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 			return orderDetailsBuilder(filteredOrder, userData, treatment, feedback);
 		}
+	}
+	
+	public Map<String, Object> getOrdersByUser(String userId) throws InterruptedException, ExecutionException {
+		Map<String, Object> orderDetails = firebaseHomeDAO.getOrders();
+		return orderDetails.entrySet().stream()
+				.filter(entry -> {
+					Map<String, Object> orders = (Map<String, Object>) entry.getValue();
+					return orders.get("parentId").equals(userId);
+				})
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 	}
 	
 	public AdminDashboard getAdminDashboard() throws InterruptedException, ExecutionException {
@@ -431,6 +442,7 @@ public class FirebaseHomeService {
 			orderDetails.setPaymentId((String) orderMap.get("paymentId"));
 			orderDetails.setTrackingId((String) orderMap.get("trackingId"));
 			orderDetails.setIsDiscount((Boolean) orderMap.get("isDiscount"));
+			orderDetails.setFollowUpOrderId((String) orderMap.get("followUpOrderId"));
 			
 			long discountPercentage = (Long) orderMap.get("discountPercentage");
 			orderDetails.setDiscountPercentage((int) discountPercentage);
