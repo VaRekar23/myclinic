@@ -27,6 +27,9 @@ public class OrdersUpdateRequest {
 	private Date courierDate;
 	private String feedbackId;
 	private String followUpOrderId;
+	private boolean isMaskImages;
+	private boolean isStoreImagesConsent;
+	private List<String> images;
 
 	public OrdersUpdateRequest() {
 		super();
@@ -215,5 +218,29 @@ public class OrdersUpdateRequest {
 	
 	public void setFollowUpOrderId(String followUpOrderId) {
 		this.followUpOrderId = followUpOrderId;
+	}
+	
+	public boolean getIsMaskImages() {
+		return isMaskImages;
+	}
+
+	public void setIsMaskImages(boolean isMaskImages) {
+		this.isMaskImages = isMaskImages;
+	}
+
+	public boolean getIsStoreImagesConsent() {
+		return isStoreImagesConsent;
+	}
+
+	public void setIsStoreImagesConsent(boolean isStoreImagesConsent) {
+		this.isStoreImagesConsent = isStoreImagesConsent;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 }

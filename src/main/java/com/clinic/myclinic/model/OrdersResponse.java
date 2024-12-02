@@ -26,6 +26,9 @@ public class OrdersResponse {
 	private String feedbackComments;
 	private Long feedbackRating;
 	private String followUpOrderId;
+	private boolean isMaskImages;
+	private boolean isStoreImagesConsent;
+	private List<String> images;
 	
 	public OrdersResponse() {
 		super();
@@ -193,5 +196,29 @@ public class OrdersResponse {
 	
 	public void setFollowUpOrderId(String followUpOrderId) {
 		this.followUpOrderId = followUpOrderId;
+	}
+	
+	public boolean getIsMaskImages() {
+		return isMaskImages;
+	}
+
+	public void setIsMaskImages(boolean isMaskImages) {
+		this.isMaskImages = isMaskImages;
+	}
+
+	public boolean getIsStoreImagesConsent() {
+		return isStoreImagesConsent;
+	}
+
+	public void setIsStoreImagesConsent(boolean isStoreImagesConsent) {
+		this.isStoreImagesConsent = isStoreImagesConsent;
+	}
+
+	public List<String> getImages() {
+		return images;
+	}
+
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 }

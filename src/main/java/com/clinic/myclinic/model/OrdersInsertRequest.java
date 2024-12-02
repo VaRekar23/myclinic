@@ -9,13 +9,16 @@ public class OrdersInsertRequest {
 	private String additionalInfo;
 	private List<OrderQuestion> questions;
 	private String followUpOrderId;
+	private boolean isMaskImages;
+	private boolean isStoreImagesConsent;
+	private List<String> images;
 	
 	public OrdersInsertRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public OrdersInsertRequest(String userId, String treatmentId, String subTreatmentId, String additionalInfo,
-			List<OrderQuestion> questions, String followUpOrderId) {
+			List<OrderQuestion> questions, String followUpOrderId, boolean isMaskImages, boolean isStoreImagesConsent, List<String> images) {
 		super();
 		this.userId = userId;
 		this.treatmentId = treatmentId;
@@ -23,6 +26,9 @@ public class OrdersInsertRequest {
 		this.additionalInfo = additionalInfo;
 		this.questions = questions;
 		this.followUpOrderId = followUpOrderId;
+		this.isMaskImages = isMaskImages;
+		this.isStoreImagesConsent = isStoreImagesConsent;
+		this.images = images;
 	}
 	
 	public String getUserId() {
@@ -60,5 +66,23 @@ public class OrdersInsertRequest {
 	}
 	public void setFollowUpOrderId(String followUpOrderId) {
 		this.followUpOrderId = followUpOrderId;
+	}
+	public boolean getIsMaskImages() {
+		return isMaskImages;
+	}
+	public void setIsMaskImages(boolean isMaskImages) {
+		this.isMaskImages = isMaskImages;
+	}
+	public boolean getIsStoreImagesConsent() {
+		return isStoreImagesConsent;
+	}
+	public void setIsStoreImagesConsent(boolean isStoreImagesConsent) {
+		this.isStoreImagesConsent = isStoreImagesConsent;
+	}
+	public List<String> getImages() {
+		return images;
+	}
+	public void setImages(List<String> images) {
+		this.images = images;
 	}
 }

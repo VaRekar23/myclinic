@@ -193,6 +193,9 @@ public class FirebaseHomeService {
 		orderBean.setStatus("PDR");
 		orderBean.setCreateDate(new Date());
 		orderBean.setFollowUpOrderId(order.getFollowUpOrderId());
+		orderBean.setIsMaskImages(order.getIsMaskImages());
+		orderBean.setIsStoreImagesConsent(order.getIsStoreImagesConsent());
+		orderBean.setImages(order.getImages());
 		
 		orderBean.setItems(new ArrayList<MedicineWithAmount>());
 		
@@ -443,6 +446,9 @@ public class FirebaseHomeService {
 			orderDetails.setTrackingId((String) orderMap.get("trackingId"));
 			orderDetails.setIsDiscount((Boolean) orderMap.get("isDiscount"));
 			orderDetails.setFollowUpOrderId((String) orderMap.get("followUpOrderId"));
+			orderDetails.setIsMaskImages((Boolean) orderMap.get("isMaskImages"));
+			orderDetails.setIsStoreImagesConsent((Boolean) orderMap.get("isStoreImagesConsent"));
+			orderDetails.setImages((List<String>) orderMap.get("images"));
 			
 			long discountPercentage = (Long) orderMap.get("discountPercentage");
 			orderDetails.setDiscountPercentage((int) discountPercentage);
